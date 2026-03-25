@@ -1,0 +1,131 @@
+/* Japanese Localization */
+"Mark" = "Mark";
+
+/* Menu Items */
+"File" = "ファイル";
+"Edit" = "編集";
+"View" = "表示";
+"Settings" = "設定";
+"Help" = "ヘルプ";
+"About Mark" = "Markについて";
+"Quit Mark" = "Markを終了";
+
+/* Capture Menu */
+"Capture" = "キャプチャ";
+"Capture Screen" = "画面をキャプチャ";
+"Capture Window" = "ウィンドウをキャプチャ";
+
+/* Export Menu */
+"Export as PNG..." = "PNGとして書き出し...";
+"Export as PDF..." = "PDFとして書き出し...";
+"Copy to Clipboard" = "クリップボードにコピー";
+"Upload to Cloud..." = "クラウドにアップロード...";
+
+/* View Menu */
+"Clear All Annotations" = "すべての注釈を削除";
+"Undo" = "元に戻す";
+"Redo" = "やり直し";
+"Toggle Overlay" = "オーバーレイを切り替え";
+
+/* Settings Menu */
+"Keyboard Shortcuts..." = "キーボードショートカット...";
+"Manage Presets..." = "プリセットを管理...";
+
+/* Annotation Tools */
+"Arrow" = "矢印";
+"Rectangle" = "四角形";
+"Text" = "テキスト";
+"Draw" = "描画";
+"Highlight" = "蛍光ペン";
+
+/* Toolbar */
+"Stroke:" = "線:";
+"Clear" = "クリア";
+"Color Picker" = "カラーピッカー";
+
+/* Text Annotation */
+"Add Text Annotation" = "テキスト注釈を追加";
+"Enter the text to annotate:" = "注釈するテキストを入力:";
+"Annotation text..." = "注釈テキスト...";
+"Add" = "追加";
+"Cancel" = "キャンセル";
+
+/* Color Names */
+"Red" = "赤";
+"Blue" = "青";
+"Green" = "緑";
+"Yellow" = "黄";
+"White" = "白";
+
+/* Notifications */
+"Copied!" = "コピーしました！";
+"Copied to clipboard." = "クリップボードにコピーしました。";
+"Uploaded!" = "アップロード完了！";
+"URL copied to clipboard." = "URLをクリップボードにコピーしました。";
+"Upload Failed" = "アップロード失敗";
+
+/* Presets */
+"No Presets" = "プリセットなし";
+"Save Preset" = "プリセットを保存";
+"Enter a name for this preset:" = "このプリセットの名前を入力:";
+"Preset name..." = "プリセット名...";
+"Save" = "保存";
+"Remove" = "削除";
+"Done" = "完了";
+"Add Current" = "現在を追加";
+"Manage Presets" = "プリセットを管理";
+
+/* Shortcuts Settings */
+"Keyboard Shortcuts" = "キーボードショートカット";
+"Action" = "アクション";
+"Shortcut" = "ショートカット";
+"Record" = "記録";
+
+/* Onboarding */
+"Welcome to Mark" = "Markへようこそ";
+"Mark lets you annotate over any app on your screen. Perfect for presentations, tutorials, and demos." = "Markがあれば、画面上のどのアプリの上にも注釈を描けます。プレゼンテーション、チュートリアル、デモに最適です。";
+"Annotation Tools" = "注釈ツール";
+"Draw arrows, rectangles, freehand strokes, highlights, and text. Pick any color and stroke width." = "矢印、四角形、自由曲線、蛍光ペン、テキストを描けます。好きな色と線の太さを選べます。";
+"Capture & Export" = "キャプチャと書き出し";
+"Capture screenshots, export annotated images as PNG or PDF, or copy directly to clipboard." = "スクリーンショットをキャプチャ、PNGまたはPDFで注釈付き画像を書き出し、またはクリップボードに直接コピーできます。";
+"Global Hotkeys" = "グローバルホットキー";
+"Trigger Mark from anywhere with customizable keyboard shortcuts. Access tools from the menu bar." = "カスタマイズ可能なキーボードショートカットで、どこからでもMarkを起動。メニューバーからツールにアクセスできます。";
+"Screen Recording Permission" = "画面録画の許可";
+"Mark needs Screen Recording permission to draw over other apps. We'll guide you through enabling it." = "Markは他のアプリの上に描画するために画面録画の許可が必要です。有効にする方法をご案内します。";
+"← Back" = "← 戻る";
+"Next →" = "次へ →";
+"Skip" = "スキップ";
+"Get Started →" = "始める →";
+
+/* Capture Preview */
+"Capture Preview" = "キャプチャプレビュー";
+"Save PNG" = "PNGとして保存";
+"Save PDF" = "PDFとして保存";
+"Copy" = "コピー";
+
+/* Window Picker */
+"Select Window to Capture" = "キャプチャするウィンドウを選択";
+
+/* Accessibility */
+"Annotation Toolbar" = "注釈ツールバー";
+"Arrow tool" = "矢印ツール";
+"Switch to arrow annotation" = "矢印注釈に切り替え";
+"Rectangle tool" = "四角形ツール";
+"Switch to rectangle annotation" = "四角形注釈に切り替え";
+"Text tool" = "テキストツール";
+"Switch to text annotation" = "テキスト注釈に切り替え";
+"Freehand tool" = "自由描画ツール";
+"Switch to freehand annotation" = "自由曲線注釈に切り替え";
+"Highlighter tool" = "蛍光ペンツール";
+"Switch to highlighter annotation" = "蛍光ペン注釈に切り替え";
+"Undo" = "元に戻す";
+"Undo last annotation (⌘Z)" = "最後の注釈を元に戻す (⌘Z)";
+"Redo" = "やり直し";
+"Redo last undone annotation (⇧⌘Z)" = "取り消した最後の注釈をやり直す (⇧⌘Z)";
+"Clear all" = "すべてクリア";
+"Remove all annotations from the overlay" = "オーバーレイからすべての注釈を削除";
+"Stroke width" = "線の太さ";
+"Adjust the thickness of annotation strokes" = "注釈の線の太さを調整";
+
+/* Tooltips */
+"Untitled Preset" = "無題のプリセット";

@@ -25,6 +25,7 @@
 		AA17356EE186685CA983B210 /* OnboardingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D19C5250860C07AEC7EC1D6C /* OnboardingViewController.swift */; };
 		B98E8745E9981FFE77D3AA8D /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 776BF17670D69F76ACBA9FB4 /* AppDelegate.swift */; };
 		BDAC56852D1FA4B3064975CB /* Design.swift in Sources */ = {isa = PBXBuildFile; fileRef = A480231218C429E41D0BA956 /* Design.swift */; };
+		D2EA435FDB228B3D26EB9A51 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = FCB3675A81505619A643984F /* Localizable.strings */; };
 		EB04B31650A0936DA1257862 /* ShortcutRecorderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41C5D95333A4D0C9DEE70AB2 /* ShortcutRecorderView.swift */; };
 		FC0084C7DE56ECF0481EE7BE /* MarkWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A39A77F89F1AD3E0739A85A /* MarkWidget.swift */; };
 /* End PBXBuildFile section */
@@ -65,9 +66,13 @@
 		41C5D95333A4D0C9DEE70AB2 /* ShortcutRecorderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShortcutRecorderView.swift; sourceTree = "<group>"; };
 		48CF6595D8274E499BDF6E6C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		619E05957901766D69564BFD /* ImgurUploader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImgurUploader.swift; sourceTree = "<group>"; };
+		64F347362236DE7141E3FA32 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/Localizable.strings; sourceTree = "<group>"; };
 		72909691FBB3AEF978821C01 /* Accessibility.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Accessibility.swift; sourceTree = "<group>"; };
+		75DE80A991BDD4DE2B5532F5 /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/Localizable.strings; sourceTree = "<group>"; };
 		776BF17670D69F76ACBA9FB4 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		7B42A2A364CA0F69EDDF273C /* ExportService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExportService.swift; sourceTree = "<group>"; };
+		7D1AB479AE99ABB1B5962CF2 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
+		8A6657FA49167004A749E5F4 /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/Localizable.strings; sourceTree = "<group>"; };
 		9DCE4825E59E9B2F422D37CA /* AnnotationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnnotationService.swift; sourceTree = "<group>"; };
 		A480231218C429E41D0BA956 /* Design.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Design.swift; sourceTree = "<group>"; };
 		A4B8A16A02F0D4569D1E23FC /* HotKeyManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HotKeyManager.swift; sourceTree = "<group>"; };
@@ -77,7 +82,9 @@
 		D19C5250860C07AEC7EC1D6C /* OnboardingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingViewController.swift; sourceTree = "<group>"; };
 		D1C4A2CAE47560AF207D0E82 /* SettingsStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsStore.swift; sourceTree = "<group>"; };
 		E3FA2E273FBEE9DF4C5B395C /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		F499D6862147834D01D1DA2A /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Localizable.strings"; sourceTree = "<group>"; };
 		F7C566F92305D14E9F8DC138 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		F8F31D7B042E5A61A95CB61C /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/Localizable.strings; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
@@ -121,8 +128,17 @@
 				D1C4A2CAE47560AF207D0E82 /* SettingsStore.swift */,
 				41C5D95333A4D0C9DEE70AB2 /* ShortcutRecorderView.swift */,
 				C3D838EA20F9D9EE48B7E714 /* Theme.swift */,
+				9182A462F68FC99494432930 /* Resources */,
 			);
 			path = Sources;
+			sourceTree = "<group>";
+		};
+		9182A462F68FC99494432930 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				FCB3675A81505619A643984F /* Localizable.strings */,
+			);
+			path = Resources;
 			sourceTree = "<group>";
 		};
 		A2A5D327EB123C478EE9A843 /* MarkWidget */ = {
@@ -195,7 +211,12 @@
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				Base,
+				de,
 				en,
+				es,
+				fr,
+				ja,
+				"zh-Hans",
 			);
 			mainGroup = 2004C2436CF2F885A748A4C9;
 			projectDirPath = "";
@@ -213,6 +234,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				2F7F58B024C4515444695A19 /* Assets.xcassets in Resources */,
+				D2EA435FDB228B3D26EB9A51 /* Localizable.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -267,6 +289,22 @@
 			targetProxy = 355A6466B35F1342EDF3DAB1 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		FCB3675A81505619A643984F /* Localizable.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				64F347362236DE7141E3FA32 /* de */,
+				7D1AB479AE99ABB1B5962CF2 /* en */,
+				8A6657FA49167004A749E5F4 /* es */,
+				75DE80A991BDD4DE2B5532F5 /* fr */,
+				F8F31D7B042E5A61A95CB61C /* ja */,
+				F499D6862147834D01D1DA2A /* zh-Hans */,
+			);
+			name = Localizable.strings;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
 		4E499FCC1EF73B8147373656 /* Debug */ = {
@@ -404,6 +442,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = Sources/Mark.entitlements;
 				COMBINE_HIDPI_IMAGES = YES;
+				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = Sources/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.mark.macos;
@@ -451,6 +490,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = Sources/Mark.entitlements;
 				COMBINE_HIDPI_IMAGES = YES;
+				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = Sources/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.mark.macos;

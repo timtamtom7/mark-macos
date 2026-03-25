@@ -1,0 +1,131 @@
+/* Simplified Chinese Localization */
+"Mark" = "Mark";
+
+/* Menu Items */
+"File" = "文件";
+"Edit" = "编辑";
+"View" = "视图";
+"Settings" = "设置";
+"Help" = "帮助";
+"About Mark" = "关于 Mark";
+"Quit Mark" = "退出 Mark";
+
+/* Capture Menu */
+"Capture" = "截图";
+"Capture Screen" = "截取屏幕";
+"Capture Window" = "截取窗口";
+
+/* Export Menu */
+"Export as PNG..." = "导出为 PNG...";
+"Export as PDF..." = "导出为 PDF...";
+"Copy to Clipboard" = "复制到剪贴板";
+"Upload to Cloud..." = "上传到云端...";
+
+/* View Menu */
+"Clear All Annotations" = "清除所有标注";
+"Undo" = "撤销";
+"Redo" = "重做";
+"Toggle Overlay" = "切换覆盖层";
+
+/* Settings Menu */
+"Keyboard Shortcuts..." = "键盘快捷键...";
+"Manage Presets..." = "管理预设...";
+
+/* Annotation Tools */
+"Arrow" = "箭头";
+"Rectangle" = "矩形";
+"Text" = "文本";
+"Draw" = "绘图";
+"Highlight" = "荧光笔";
+
+/* Toolbar */
+"Stroke:" = "线宽：";
+"Clear" = "清除";
+"Color Picker" = "颜色选择器";
+
+/* Text Annotation */
+"Add Text Annotation" = "添加文本标注";
+"Enter the text to annotate:" = "输入要标注的文本：";
+"Annotation text..." = "标注文本...";
+"Add" = "添加";
+"Cancel" = "取消";
+
+/* Color Names */
+"Red" = "红色";
+"Blue" = "蓝色";
+"Green" = "绿色";
+"Yellow" = "黄色";
+"White" = "白色";
+
+/* Notifications */
+"Copied!" = "已复制！";
+"Copied to clipboard." = "已复制到剪贴板。";
+"Uploaded!" = "上传成功！";
+"URL copied to clipboard." = "链接已复制到剪贴板。";
+"Upload Failed" = "上传失败";
+
+/* Presets */
+"No Presets" = "无预设";
+"Save Preset" = "保存预设";
+"Enter a name for this preset:" = "输入此预设的名称：";
+"Preset name..." = "预设名称...";
+"Save" = "保存";
+"Remove" = "移除";
+"Done" = "完成";
+"Add Current" = "添加当前";
+"Manage Presets" = "管理预设";
+
+/* Shortcuts Settings */
+"Keyboard Shortcuts" = "键盘快捷键";
+"Action" = "操作";
+"Shortcut" = "快捷键";
+"Record" = "录制";
+
+/* Onboarding */
+"Welcome to Mark" = "欢迎使用 Mark";
+"Mark lets you annotate over any app on your screen. Perfect for presentations, tutorials, and demos." = "Mark 让你可以在屏幕上的任何应用上添加标注。非常适合演示、教程和演示。";
+"Annotation Tools" = "标注工具";
+"Draw arrows, rectangles, freehand strokes, highlights, and text. Pick any color and stroke width." = "绘制箭头、矩形、任意线条、荧光笔效果和文本。可选择任意颜色和线宽。";
+"Capture & Export" = "截图与导出";
+"Capture screenshots, export annotated images as PNG or PDF, or copy directly to clipboard." = "截取屏幕截图，将标注图像导出为 PNG 或 PDF，或直接复制到剪贴板。";
+"Global Hotkeys" = "全局快捷键";
+"Trigger Mark from anywhere with customizable keyboard shortcuts. Access tools from the menu bar." = "使用可自定义的键盘快捷键从任何地方启动 Mark。可从菜单栏访问工具。";
+"Screen Recording Permission" = "屏幕录制权限";
+"Mark needs Screen Recording permission to draw over other apps. We'll guide you through enabling it." = "Mark 需要屏幕录制权限才能在其他应用上绘图。我们将引导你启用它。";
+"← Back" = "← 上一步";
+"Next →" = "下一步 →";
+"Skip" = "跳过";
+"Get Started →" = "开始使用 →";
+
+/* Capture Preview */
+"Capture Preview" = "截图预览";
+"Save PNG" = "保存 PNG";
+"Save PDF" = "保存 PDF";
+"Copy" = "复制";
+
+/* Window Picker */
+"Select Window to Capture" = "选择要截取的窗口";
+
+/* Accessibility */
+"Annotation Toolbar" = "标注工具栏";
+"Arrow tool" = "箭头工具";
+"Switch to arrow annotation" = "切换到箭头标注";
+"Rectangle tool" = "矩形工具";
+"Switch to rectangle annotation" = "切换到矩形标注";
+"Text tool" = "文本工具";
+"Switch to text annotation" = "切换到文本标注";
+"Freehand tool" = "自由绘制工具";
+"Switch to freehand annotation" = "切换到自由绘制标注";
+"Highlighter tool" = "荧光笔工具";
+"Switch to highlighter annotation" = "切换到荧光笔标注";
+"Undo" = "撤销";
+"Undo last annotation (⌘Z)" = "撤销上一步标注 (⌘Z)";
+"Redo" = "重做";
+"Redo last undone annotation (⇧⌘Z)" = "重做上一步撤销 (⇧⌘Z)";
+"Clear all" = "全部清除";
+"Remove all annotations from the overlay" = "从覆盖层移除所有标注";
+"Stroke width" = "线宽";
+"Adjust the thickness of annotation strokes" = "调整标注线条的粗细";
+
+/* Tooltips */
+"Untitled Preset" = "未命名预设";

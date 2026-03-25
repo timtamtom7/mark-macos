@@ -1,0 +1,131 @@
+/* Spanish Localization */
+"Mark" = "Mark";
+
+/* Menu Items */
+"File" = "Archivo";
+"Edit" = "Editar";
+"View" = "Ver";
+"Settings" = "Ajustes";
+"Help" = "Ayuda";
+"About Mark" = "Acerca de Mark";
+"Quit Mark" = "Salir de Mark";
+
+/* Capture Menu */
+"Capture" = "Captura";
+"Capture Screen" = "Capturar pantalla";
+"Capture Window" = "Capturar ventana";
+
+/* Export Menu */
+"Export as PNG..." = "Exportar como PNG...";
+"Export as PDF..." = "Exportar como PDF...";
+"Copy to Clipboard" = "Copiar al portapapeles";
+"Upload to Cloud..." = "Subir a la nube...";
+
+/* View Menu */
+"Clear All Annotations" = "Borrar todas las anotaciones";
+"Undo" = "Deshacer";
+"Redo" = "Rehacer";
+"Toggle Overlay" = "Alternar superposición";
+
+/* Settings Menu */
+"Keyboard Shortcuts..." = "Atajos de teclado...";
+"Manage Presets..." = "Administrar ajustes...";
+
+/* Annotation Tools */
+"Arrow" = "Flecha";
+"Rectangle" = "Rectángulo";
+"Text" = "Texto";
+"Draw" = "Dibujar";
+"Highlight" = "Resaltar";
+
+/* Toolbar */
+"Stroke:" = "Trazo:";
+"Clear" = "Borrar";
+"Color Picker" = "Selector de color";
+
+/* Text Annotation */
+"Add Text Annotation" = "Agregar anotación de texto";
+"Enter the text to annotate:" = "Ingrese el texto a anotar:";
+"Annotation text..." = "Texto de anotación...";
+"Add" = "Agregar";
+"Cancel" = "Cancelar";
+
+/* Color Names */
+"Red" = "Rojo";
+"Blue" = "Azul";
+"Green" = "Verde";
+"Yellow" = "Amarillo";
+"White" = "Blanco";
+
+/* Notifications */
+"Copied!" = "¡Copiado!";
+"Copied to clipboard." = "Copiado al portapapeles.";
+"Uploaded!" = "¡Subido!";
+"URL copied to clipboard." = "URL copiada al portapapeles.";
+"Upload Failed" = "Error al subir";
+
+/* Presets */
+"No Presets" = "Sin ajustes";
+"Save Preset" = "Guardar ajuste";
+"Enter a name for this preset:" = "Ingrese un nombre para este ajuste:";
+"Preset name..." = "Nombre del ajuste...";
+"Save" = "Guardar";
+"Remove" = "Eliminar";
+"Done" = "Listo";
+"Add Current" = "Agregar actual";
+"Manage Presets" = "Administrar ajustes";
+
+/* Shortcuts Settings */
+"Keyboard Shortcuts" = "Atajos de teclado";
+"Action" = "Acción";
+"Shortcut" = "Atajo";
+"Record" = "Grabar";
+
+/* Onboarding */
+"Welcome to Mark" = "Bienvenido a Mark";
+"Mark lets you annotate over any app on your screen. Perfect for presentations, tutorials, and demos." = "Mark te permite anotar sobre cualquier aplicación en tu pantalla. Perfecto para presentaciones, tutoriales y demostraciones.";
+"Annotation Tools" = "Herramientas de anotación";
+"Draw arrows, rectangles, freehand strokes, highlights, and text. Pick any color and stroke width." = "Dibuja flechas, rectángulos, trazos a mano alzada, resaltados y texto. Elige cualquier color y grosor de trazo.";
+"Capture & Export" = "Captura y exportación";
+"Capture screenshots, export annotated images as PNG or PDF, or copy directly to clipboard." = "Captura capturas de pantalla, exporta imágenes anotadas como PNG o PDF, o copia directamente al portapapeles.";
+"Global Hotkeys" = "Atajos globales";
+"Trigger Mark from anywhere with customizable keyboard shortcuts. Access tools from the menu bar." = "Activa Mark desde cualquier lugar con atajos de teclado personalizables. Accede a las herramientas desde la barra de menú.";
+"Screen Recording Permission" = "Permiso de grabación de pantalla";
+"Mark needs Screen Recording permission to draw over other apps. We'll guide you through enabling it." = "Mark necesita permiso de grabación de pantalla para dibujar sobre otras aplicaciones. Te guiaremos para habilitarlo.";
+"← Back" = "← Atrás";
+"Next →" = "Siguiente →";
+"Skip" = "Omitir";
+"Get Started →" = "Comenzar →";
+
+/* Capture Preview */
+"Capture Preview" = "Vista previa de captura";
+"Save PNG" = "Guardar PNG";
+"Save PDF" = "Guardar PDF";
+"Copy" = "Copiar";
+
+/* Window Picker */
+"Select Window to Capture" = "Seleccionar ventana a capturar";
+
+/* Accessibility */
+"Annotation Toolbar" = "Barra de herramientas de anotación";
+"Arrow tool" = "Herramienta flecha";
+"Switch to arrow annotation" = "Cambiar a anotación de flecha";
+"Rectangle tool" = "Herramienta rectángulo";
+"Switch to rectangle annotation" = "Cambiar a anotación de rectángulo";
+"Text tool" = "Herramienta texto";
+"Switch to text annotation" = "Cambiar a anotación de texto";
+"Freehand tool" = "Herramienta mano alzada";
+"Switch to freehand annotation" = "Cambiar a anotación a mano alzada";
+"Highlighter tool" = "Herramienta resaltador";
+"Switch to highlighter annotation" = "Cambiar a anotación de resaltado";
+"Undo" = "Deshacer";
+"Undo last annotation (⌘Z)" = "Deshacer última anotación (⌘Z)";
+"Redo" = "Rehacer";
+"Redo last undone annotation (⇧⌘Z)" = "Rehacer última anotación deshecha (⇧⌘Z)";
+"Clear all" = "Borrar todo";
+"Remove all annotations from the overlay" = "Eliminar todas las anotaciones de la superposición";
+"Stroke width" = "Grosor del trazo";
+"Adjust the thickness of annotation strokes" = "Ajustar el grosor de los trazos de anotación";
+
+/* Tooltips */
+"Untitled Preset" = "Ajuste sin título";

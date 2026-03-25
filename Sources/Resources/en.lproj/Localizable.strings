@@ -1,0 +1,147 @@
+/* App Name */
+"Mark" = "Mark";
+
+/* Menu Items */
+"File" = "File";
+"Edit" = "Edit";
+"View" = "View";
+"Settings" = "Settings";
+"Help" = "Help";
+"About Mark" = "About Mark";
+"Quit Mark" = "Quit Mark";
+
+/* Capture Menu */
+"Capture" = "Capture";
+"Capture Screen" = "Capture Screen";
+"Capture Window" = "Capture Window";
+
+/* Export Menu */
+"Export as PNG..." = "Export as PNG...";
+"Export as PDF..." = "Export as PDF...";
+"Copy to Clipboard" = "Copy to Clipboard";
+"Upload to Cloud..." = "Upload to Cloud...";
+
+/* View Menu */
+"Clear All Annotations" = "Clear All Annotations";
+"Undo" = "Undo";
+"Redo" = "Redo";
+"Toggle Overlay" = "Toggle Overlay";
+
+/* Settings Menu */
+"Keyboard Shortcuts..." = "Keyboard Shortcuts...";
+"Manage Presets..." = "Manage Presets...";
+
+/* Annotation Tools */
+"Arrow" = "Arrow";
+"Rectangle" = "Rectangle";
+"Text" = "Text";
+"Draw" = "Draw";
+"Highlight" = "Highlight";
+
+/* Toolbar */
+"Stroke:" = "Stroke:";
+"Clear" = "Clear";
+"Color Picker" = "Color Picker";
+
+/* Text Annotation */
+"Add Text Annotation" = "Add Text Annotation";
+"Enter the text to annotate:" = "Enter the text to annotate:";
+"Annotation text..." = "Annotation text...";
+"Add" = "Add";
+"Cancel" = "Cancel";
+
+/* Color Names */
+"Red" = "Red";
+"Blue" = "Blue";
+"Green" = "Green";
+"Yellow" = "Yellow";
+"White" = "White";
+
+/* Notifications */
+"Copied!" = "Copied!";
+"Copied to clipboard." = "Copied to clipboard.";
+"Uploaded!" = "Uploaded!";
+"URL copied to clipboard." = "URL copied to clipboard.";
+"Upload Failed" = "Upload Failed";
+
+/* Presets */
+"No Presets" = "No Presets";
+"Save Preset" = "Save Preset";
+"Enter a name for this preset:" = "Enter a name for this preset:";
+"Preset name..." = "Preset name...";
+"Save" = "Save";
+"Remove" = "Remove";
+"Done" = "Done";
+"Add Current" = "Add Current";
+"Manage Presets" = "Manage Presets";
+
+/* Shortcuts Settings */
+"Keyboard Shortcuts" = "Keyboard Shortcuts";
+"Action" = "Action";
+"Shortcut" = "Shortcut";
+"Record" = "Record";
+
+/* Onboarding */
+"Welcome to Mark" = "Welcome to Mark";
+"Mark lets you annotate over any app on your screen. Perfect for presentations, tutorials, and demos." = "Mark lets you annotate over any app on your screen. Perfect for presentations, tutorials, and demos.";
+"Annotation Tools" = "Annotation Tools";
+"Draw arrows, rectangles, freehand strokes, highlights, and text. Pick any color and stroke width." = "Draw arrows, rectangles, freehand strokes, highlights, and text. Pick any color and stroke width.";
+"Capture & Export" = "Capture & Export";
+"Capture screenshots, export annotated images as PNG or PDF, or copy directly to clipboard." = "Capture screenshots, export annotated images as PNG or PDF, or copy directly to clipboard.";
+"Global Hotkeys" = "Global Hotkeys";
+"Trigger Mark from anywhere with customizable keyboard shortcuts. Access tools from the menu bar." = "Trigger Mark from anywhere with customizable keyboard shortcuts. Access tools from the menu bar.";
+"Screen Recording Permission" = "Screen Recording Permission";
+"Mark needs Screen Recording permission to draw over other apps. We'll guide you through enabling it." = "Mark needs Screen Recording permission to draw over other apps. We'll guide you through enabling it.";
+"← Back" = "← Back";
+"Next →" = "Next →";
+"Skip" = "Skip";
+"Get Started →" = "Get Started →";
+
+/* Capture Preview */
+"Capture Preview" = "Capture Preview";
+"Save PNG" = "Save PNG";
+"Save PDF" = "Save PDF";
+"Copy" = "Copy";
+
+/* Window Picker */
+"Select Window to Capture" = "Select Window to Capture";
+
+/* App Shortcuts */
+"Open Mark" = "Open Mark";
+"Start Mark" = "Start Mark";
+"Show Mark overlay" = "Show Mark overlay";
+"Capture screen with Mark" = "Capture screen with Mark";
+"Screenshot Mark" = "Screenshot Mark";
+"Clear Mark annotations" = "Clear Mark annotations";
+"Clear annotations" = "Clear annotations";
+
+/* Widget */
+"Mark Quick Start" = "Mark Quick Start";
+"Quickly start presentations and capture screens." = "Quickly start presentations and capture screens.";
+"Start" = "Start";
+"Recent" = "Recent";
+"No recent files" = "No recent files";
+
+/* Accessibility */
+"Annotation Toolbar" = "Annotation Toolbar";
+"Arrow tool" = "Arrow tool";
+"Switch to arrow annotation" = "Switch to arrow annotation";
+"Rectangle tool" = "Rectangle tool";
+"Switch to rectangle annotation" = "Switch to rectangle annotation";
+"Text tool" = "Text tool";
+"Switch to text annotation" = "Switch to text annotation";
+"Freehand tool" = "Freehand tool";
+"Switch to freehand annotation" = "Switch to freehand annotation";
+"Highlighter tool" = "Highlighter tool";
+"Switch to highlighter annotation" = "Switch to highlighter annotation";
+"Undo" = "Undo";
+"Undo last annotation (⌘Z)" = "Undo last annotation (⌘Z)";
+"Redo" = "Redo";
+"Redo last undone annotation (⇧⌘Z)" = "Redo last undone annotation (⇧⌘Z)";
+"Clear all" = "Clear all";
+"Remove all annotations from the overlay" = "Remove all annotations from the overlay";
+"Stroke width" = "Stroke width";
+"Adjust the thickness of annotation strokes" = "Adjust the thickness of annotation strokes";
+
+/* Tooltips */
+"Untitled Preset" = "Untitled Preset";

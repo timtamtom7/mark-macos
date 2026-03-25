@@ -38,6 +38,7 @@ targets:
         CODE_SIGN_ENTITLEMENTS: Sources/Mark.entitlements
         PRODUCT_BUNDLE_IDENTIFIER: com.mark.macos
         LD_RUNPATH_SEARCH_PATHS: "@executable_path/../Frameworks"
+        GENERATE_INFOPLIST_FILE: NO
     entitlements:
       path: Sources/Mark.entitlements
     dependencies:
