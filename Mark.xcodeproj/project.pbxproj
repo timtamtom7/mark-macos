@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		0F30EC8CC6DC817E95748359 /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3D838EA20F9D9EE48B7E714 /* Theme.swift */; };
+		1BCC4EE0C990B85D2DC1D1A0 /* ExportService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B42A2A364CA0F69EDDF273C /* ExportService.swift */; };
 		7017EDFFBBBA187765E2945A /* SettingsStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1C4A2CAE47560AF207D0E82 /* SettingsStore.swift */; };
 		7490C34381B6FE128DC3C805 /* AnnotationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9DCE4825E59E9B2F422D37CA /* AnnotationService.swift */; };
 		7C41CA2F387E445268A39E1D /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 387C6A098AE32BE043BE9477 /* main.swift */; };
@@ -20,6 +21,7 @@
 		387C6A098AE32BE043BE9477 /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		3C2AC6F09B7AA4D77EBDE604 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		776BF17670D69F76ACBA9FB4 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		7B42A2A364CA0F69EDDF273C /* ExportService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExportService.swift; sourceTree = "<group>"; };
 		9DCE4825E59E9B2F422D37CA /* AnnotationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnnotationService.swift; sourceTree = "<group>"; };
 		C3D838EA20F9D9EE48B7E714 /* Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Theme.swift; sourceTree = "<group>"; };
 		D1C4A2CAE47560AF207D0E82 /* SettingsStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsStore.swift; sourceTree = "<group>"; };
@@ -47,6 +49,7 @@
 			children = (
 				9DCE4825E59E9B2F422D37CA /* AnnotationService.swift */,
 				776BF17670D69F76ACBA9FB4 /* AppDelegate.swift */,
+				7B42A2A364CA0F69EDDF273C /* ExportService.swift */,
 				3C2AC6F09B7AA4D77EBDE604 /* Info.plist */,
 				387C6A098AE32BE043BE9477 /* main.swift */,
 				3363761D86289620303793DE /* Mark.entitlements */,
@@ -112,6 +115,7 @@
 			files = (
 				7490C34381B6FE128DC3C805 /* AnnotationService.swift in Sources */,
 				B98E8745E9981FFE77D3AA8D /* AppDelegate.swift in Sources */,
+				1BCC4EE0C990B85D2DC1D1A0 /* ExportService.swift in Sources */,
 				7017EDFFBBBA187765E2945A /* SettingsStore.swift in Sources */,
 				0F30EC8CC6DC817E95748359 /* Theme.swift in Sources */,
 				7C41CA2F387E445268A39E1D /* main.swift in Sources */,

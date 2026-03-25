@@ -5,6 +5,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     private var overlayWindow: OverlayWindow!
     private var annotationService: AnnotationService!
     private var settingsStore: SettingsStore!
+    private var exportService: ExportService!
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         settingsStore = SettingsStore()
@@ -16,6 +17,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             settings: settingsStore
         )
         overlayWindow.makeKeyAndOrderFront(nil)
+
+        exportService = ExportService(annotationService: annotationService, overlayWindow: overlayWindow)
 
         setupMenu()
         NSApp.setActivationPolicy(.accessory)
@@ -37,6 +40,24 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         appMenu.addItem(withTitle: "About Mark", action: #selector(NSApplication.orderFrontStandardAboutPanel(_:)), keyEquivalent: "")
         appMenu.addItem(NSMenuItem.separator())
         appMenu.addItem(withTitle: "Quit Mark", action: #selector(NSApplication.terminate(_:)), keyEquivalent: "q")
+
+        // File menu
+        let fileMenuItem = NSMenuItem()
+        mainMenu.addItem(fileMenuItem)
+        let fileMenu = NSMenu(title: "File")
+        fileMenuItem.submenu = fileMenu
+
+        let captureSubmenu = NSMenu(title: "Capture")
+        let captureItem = NSMenuItem(title: "Capture", action: nil, keyEquivalent: "")
+        captureItem.submenu = captureSubmenu
+        fileMenu.addItem(captureItem)
+        captureSubmenu.addItem(withTitle: "Capture Screen", action: #selector(captureScreen), keyEquivalent: "s")
+        captureSubmenu.addItem(withTitle: "Capture Window", action: #selector(captureWindow), keyEquivalent: "W")
+
+        fileMenu.addItem(NSMenuItem.separator())
+        fileMenu.addItem(withTitle: "Export as PNG...", action: #selector(exportPNG), keyEquivalent: "e")
+        fileMenu.addItem(withTitle: "Export as PDF...", action: #selector(exportPDF), keyEquivalent: "E")
+        fileMenu.addItem(withTitle: "Copy to Clipboard", action: #selector(copyClipboard), keyEquivalent: "c")
 
         // View menu
         let viewMenuItem = NSMenuItem()
@@ -89,6 +110,26 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     @objc private func redoAction() {
         annotationService.redo()
         overlayWindow.refreshAnnotationView()
+    }
+
+    @objc private func captureScreen() {
+        exportService.captureScreen()
+    }
+
+    @objc private func captureWindow() {
+        exportService.captureWindow()
+    }
+
+    @objc private func exportPNG() {
+        exportService.exportPNG()
+    }
+
+    @objc private func exportPDF() {
+        exportService.exportPDF()
+    }
+
+    @objc private func copyClipboard() {
+        exportService.copyToClipboard()
     }
 
     @objc private func toggleOverlay() {
