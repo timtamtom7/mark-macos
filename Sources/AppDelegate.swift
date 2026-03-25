@@ -50,6 +50,26 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
         setupMenu()
         NSApp.setActivationPolicy(.accessory)
+
+        // Show onboarding on first launch
+        if !UserDefaults.standard.bool(forKey: "hasCompletedOnboarding") {
+            showOnboarding()
+        }
+    }
+
+    private func showOnboarding() {
+        let onboarding = OnboardingViewController()
+        let panel = NSPanel(
+            contentRect: NSRect(x: 0, y: 0, width: 600, height: 400),
+            styleMask: [.titled, .closable],
+            backing: .buffered,
+            defer: false
+        )
+        panel.contentViewController = onboarding
+        panel.title = "Welcome to Mark"
+        panel.center()
+        panel.isFloatingPanel = false
+        panel.makeKeyAndOrderFront(nil)
     }
 
     @objc private func handleURLEvent(_ event: NSAppleEventDescriptor, withReplyEvent replyEvent: NSAppleEventDescriptor) {
