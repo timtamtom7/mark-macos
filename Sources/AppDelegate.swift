@@ -40,8 +40,36 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         }
         hotKeyManager.start()
 
+        // Handle URL scheme
+        NSAppleEventManager.shared().setEventHandler(
+            self,
+            andSelector: #selector(handleURLEvent(_:withReplyEvent:)),
+            forEventClass: AEEventClass(kInternetEventClass),
+            andEventID: AEEventID(kAEGetURL)
+        )
+
         setupMenu()
         NSApp.setActivationPolicy(.accessory)
+    }
+
+    @objc private func handleURLEvent(_ event: NSAppleEventDescriptor, withReplyEvent replyEvent: NSAppleEventDescriptor) {
+        guard let urlString = event.paramDescriptor(forKeyword: AEKeyword(keyDirectObject))?.stringValue,
+              let url = URL(string: urlString) else { return }
+
+        switch url.host {
+        case "open":
+            overlayWindow.makeKeyAndOrderFront(nil)
+            if let components = URLComponents(url: url, resolvingAgainstBaseURL: false),
+               let fileItem = components.queryItems?.first(where: { $0.name == "file" }),
+               let filePath = fileItem.value {
+                // Open file for annotation
+                print("Open file: \(filePath)")
+            }
+        case "capture":
+            exportService.captureScreen()
+        default:
+            break
+        }
     }
 
     private func handleHotkeyAction(_ action: HotkeyAction) {

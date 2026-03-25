@@ -9,25 +9,57 @@
 /* Begin PBXBuildFile section */
 		0F30EC8CC6DC817E95748359 /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3D838EA20F9D9EE48B7E714 /* Theme.swift */; };
 		1BCC4EE0C990B85D2DC1D1A0 /* ExportService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B42A2A364CA0F69EDDF273C /* ExportService.swift */; };
+		31EEF6B86E926829D0892E3B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E3FA2E273FBEE9DF4C5B395C /* Assets.xcassets */; };
 		3C41340A60CB4C32213E51B4 /* MenuBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32BCF460EE7457C82A789AE0 /* MenuBarController.swift */; };
 		4CBE58BC814D3E0ADBD2A7BE /* ImgurUploader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 619E05957901766D69564BFD /* ImgurUploader.swift */; };
 		4E420A18A3C226B7390E5351 /* HotKeyManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4B8A16A02F0D4569D1E23FC /* HotKeyManager.swift */; };
+		5429ED6E6AD8FD7169C27B8F /* MarkIntents.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DC5D01B77591BBB4B8F2C84 /* MarkIntents.swift */; };
 		60C82377DF7DA9ADC40B12D4 /* CloudExportService.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFC074083C29A3F44B634A03 /* CloudExportService.swift */; };
+		6FB2390FD2318F176123B95A /* MarkWidget.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 1495274203C80C425D39CACF /* MarkWidget.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		7017EDFFBBBA187765E2945A /* SettingsStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1C4A2CAE47560AF207D0E82 /* SettingsStore.swift */; };
 		7490C34381B6FE128DC3C805 /* AnnotationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9DCE4825E59E9B2F422D37CA /* AnnotationService.swift */; };
 		7A3A8797D38C33D93107DA5E /* ICloudSyncService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C050D1DA1E80525AEE7898F7 /* ICloudSyncService.swift */; };
 		7C41CA2F387E445268A39E1D /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 387C6A098AE32BE043BE9477 /* main.swift */; };
 		B98E8745E9981FFE77D3AA8D /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 776BF17670D69F76ACBA9FB4 /* AppDelegate.swift */; };
 		EB04B31650A0936DA1257862 /* ShortcutRecorderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41C5D95333A4D0C9DEE70AB2 /* ShortcutRecorderView.swift */; };
+		FC0084C7DE56ECF0481EE7BE /* MarkWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A39A77F89F1AD3E0739A85A /* MarkWidget.swift */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		355A6466B35F1342EDF3DAB1 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 0C51B10989F2DFBB9934ACA7 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 48FC5AFF3DF260B5EFE9838C;
+			remoteInfo = MarkWidget;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		F541A09427FFDF7F272C42D5 /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				6FB2390FD2318F176123B95A /* MarkWidget.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
+		0A39A77F89F1AD3E0739A85A /* MarkWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarkWidget.swift; sourceTree = "<group>"; };
+		1495274203C80C425D39CACF /* MarkWidget.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = MarkWidget.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		1E24E6E0FAB593AD8A0A16F1 /* Mark.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Mark.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		32BCF460EE7457C82A789AE0 /* MenuBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuBarController.swift; sourceTree = "<group>"; };
 		3363761D86289620303793DE /* Mark.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Mark.entitlements; sourceTree = "<group>"; };
 		387C6A098AE32BE043BE9477 /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		3C2AC6F09B7AA4D77EBDE604 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		3DC5D01B77591BBB4B8F2C84 /* MarkIntents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarkIntents.swift; sourceTree = "<group>"; };
 		41C5D95333A4D0C9DEE70AB2 /* ShortcutRecorderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShortcutRecorderView.swift; sourceTree = "<group>"; };
+		48CF6595D8274E499BDF6E6C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		619E05957901766D69564BFD /* ImgurUploader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImgurUploader.swift; sourceTree = "<group>"; };
 		776BF17670D69F76ACBA9FB4 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		7B42A2A364CA0F69EDDF273C /* ExportService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExportService.swift; sourceTree = "<group>"; };
@@ -37,12 +69,14 @@
 		C3D838EA20F9D9EE48B7E714 /* Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Theme.swift; sourceTree = "<group>"; };
 		CFC074083C29A3F44B634A03 /* CloudExportService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloudExportService.swift; sourceTree = "<group>"; };
 		D1C4A2CAE47560AF207D0E82 /* SettingsStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsStore.swift; sourceTree = "<group>"; };
+		E3FA2E273FBEE9DF4C5B395C /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
 		2004C2436CF2F885A748A4C9 = {
 			isa = PBXGroup;
 			children = (
+				A2A5D327EB123C478EE9A843 /* MarkWidget */,
 				2DDB0083D8415570075AA3D0 /* Sources */,
 				2AB47B7281B23E9A3E89C7DD /* Products */,
 			);
@@ -52,6 +86,7 @@
 			isa = PBXGroup;
 			children = (
 				1E24E6E0FAB593AD8A0A16F1 /* Mark.app */,
+				1495274203C80C425D39CACF /* MarkWidget.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -69,6 +104,7 @@
 				3C2AC6F09B7AA4D77EBDE604 /* Info.plist */,
 				387C6A098AE32BE043BE9477 /* main.swift */,
 				3363761D86289620303793DE /* Mark.entitlements */,
+				3DC5D01B77591BBB4B8F2C84 /* MarkIntents.swift */,
 				32BCF460EE7457C82A789AE0 /* MenuBarController.swift */,
 				D1C4A2CAE47560AF207D0E82 /* SettingsStore.swift */,
 				41C5D95333A4D0C9DEE70AB2 /* ShortcutRecorderView.swift */,
@@ -77,18 +113,46 @@
 			path = Sources;
 			sourceTree = "<group>";
 		};
+		A2A5D327EB123C478EE9A843 /* MarkWidget */ = {
+			isa = PBXGroup;
+			children = (
+				E3FA2E273FBEE9DF4C5B395C /* Assets.xcassets */,
+				48CF6595D8274E499BDF6E6C /* Info.plist */,
+				0A39A77F89F1AD3E0739A85A /* MarkWidget.swift */,
+			);
+			path = MarkWidget;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		48FC5AFF3DF260B5EFE9838C /* MarkWidget */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 603F7D76FD32CEF3D5F5D6AE /* Build configuration list for PBXNativeTarget "MarkWidget" */;
+			buildPhases = (
+				DCACCDDFC7B3600A1AF56B68 /* Sources */,
+				81AA68BFBC097ACA79D289A3 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = MarkWidget;
+			productName = MarkWidget;
+			productReference = 1495274203C80C425D39CACF /* MarkWidget.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
 		97F16661D87E242A6AB19429 /* Mark */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 985D5D8059B24416D564B280 /* Build configuration list for PBXNativeTarget "Mark" */;
 			buildPhases = (
 				A8AE6A983E32F287F062D7CD /* Sources */,
+				F541A09427FFDF7F272C42D5 /* Embed Foundation Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				C4FCB348FA1FDAF25D6CD608 /* PBXTargetDependency */,
 			);
 			name = Mark;
 			productName = Mark;
@@ -104,6 +168,9 @@
 				BuildIndependentTargetsInParallel = YES;
 				LastUpgradeCheck = 1500;
 				TargetAttributes = {
+					48FC5AFF3DF260B5EFE9838C = {
+						ProvisioningStyle = Automatic;
+					};
 					97F16661D87E242A6AB19429 = {
 						ProvisioningStyle = Automatic;
 					};
@@ -122,9 +189,21 @@
 			projectRoot = "";
 			targets = (
 				97F16661D87E242A6AB19429 /* Mark */,
+				48FC5AFF3DF260B5EFE9838C /* MarkWidget */,
 			);
 		};
 /* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		81AA68BFBC097ACA79D289A3 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				31EEF6B86E926829D0892E3B /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		A8AE6A983E32F287F062D7CD /* Sources */ = {
@@ -138,6 +217,7 @@
 				4E420A18A3C226B7390E5351 /* HotKeyManager.swift in Sources */,
 				7A3A8797D38C33D93107DA5E /* ICloudSyncService.swift in Sources */,
 				4CBE58BC814D3E0ADBD2A7BE /* ImgurUploader.swift in Sources */,
+				5429ED6E6AD8FD7169C27B8F /* MarkIntents.swift in Sources */,
 				3C41340A60CB4C32213E51B4 /* MenuBarController.swift in Sources */,
 				7017EDFFBBBA187765E2945A /* SettingsStore.swift in Sources */,
 				EB04B31650A0936DA1257862 /* ShortcutRecorderView.swift in Sources */,
@@ -146,7 +226,23 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		DCACCDDFC7B3600A1AF56B68 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				FC0084C7DE56ECF0481EE7BE /* MarkWidget.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		C4FCB348FA1FDAF25D6CD608 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 48FC5AFF3DF260B5EFE9838C /* MarkWidget */;
+			targetProxy = 355A6466B35F1342EDF3DAB1 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		4E499FCC1EF73B8147373656 /* Debug */ = {
@@ -291,6 +387,40 @@
 			};
 			name = Debug;
 		};
+		BD03F3F9E275D5061F678174 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				COMBINE_HIDPI_IMAGES = YES;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = MarkWidget/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "@executable_path/../Frameworks @executable_path/../../../../Frameworks";
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.mark.macos.widget;
+				PRODUCT_MODULE_NAME = MarkWidget;
+				PRODUCT_NAME = MarkWidget;
+				SDKROOT = macosx;
+				SKIP_INSTALL = YES;
+			};
+			name = Debug;
+		};
+		D6EBAA0D3800DEC0AE9B0EC9 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				COMBINE_HIDPI_IMAGES = YES;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = MarkWidget/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "@executable_path/../Frameworks @executable_path/../../../../Frameworks";
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.mark.macos.widget;
+				PRODUCT_MODULE_NAME = MarkWidget;
+				PRODUCT_NAME = MarkWidget;
+				SDKROOT = macosx;
+				SKIP_INSTALL = YES;
+			};
+			name = Release;
+		};
 		EBB316C04BAFA061E20A9E5A /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -307,6 +437,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		603F7D76FD32CEF3D5F5D6AE /* Build configuration list for PBXNativeTarget "MarkWidget" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				BD03F3F9E275D5061F678174 /* Debug */,
+				D6EBAA0D3800DEC0AE9B0EC9 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
 		985D5D8059B24416D564B280 /* Build configuration list for PBXNativeTarget "Mark" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (

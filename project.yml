@@ -32,3 +32,26 @@ targets:
         LD_RUNPATH_SEARCH_PATHS: "@executable_path/../Frameworks"
     entitlements:
       path: Sources/Mark.entitlements
+    dependencies:
+      - target: MarkWidget
+        embed: true
+
+  MarkWidget:
+    type: app-extension
+    platform: macOS
+    deploymentTarget:
+      macOS: "14.0"
+    sources:
+      - path: MarkWidget
+        type: group
+    settings:
+      base:
+        INFOPLIST_FILE: MarkWidget/Info.plist
+        PRODUCT_BUNDLE_IDENTIFIER: com.mark.macos.widget
+        PRODUCT_NAME: MarkWidget
+        PRODUCT_MODULE_NAME: MarkWidget
+        LD_RUNPATH_SEARCH_PATHS: "@executable_path/../Frameworks @executable_path/../../../../Frameworks"
+        SKIP_INSTALL: YES
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+        GENERATE_INFOPLIST_FILE: NO
+        MACOSX_DEPLOYMENT_TARGET: "14.0"
