@@ -1,0 +1,21 @@
+{
+  "appInfo": {
+    "appNames": {
+      "en-US": "Mark"
+    },
+    "appDescriptions": {
+      "en-US": "Mark is a lightweight annotation overlay for macOS. Perfect for educators, presenters, and content creators who need to draw attention on screen.\n\nDraw arrows, rectangles, freehand strokes, and highlights directly over any application. Pick any color and stroke width. Undo mistakes with full undo/redo support.\n\nKey Features:\n• Freehand drawing and highlighting\n• Arrows, rectangles, and text annotations\n• Global hotkeys for instant access\n• Screenshot and window capture\n• Export as PNG, PDF, or copy to clipboard\n• Upload annotations directly to Imgur\n• iCloud sync of your presets across devices\n• Widgets and Shortcuts integration\n• Full VoiceOver accessibility support\n• Beautiful onboarding experience",
+    },
+    "appShortDescriptions": {
+      "en-US": "Annotate over any app on your screen"
+    },
+    "keywords": {
+      "en-US": ["annotation", "presentation", "screenshot", "screen capture", "overlay", "draw", "highlight", "arrows", "teaching", "demo", "productivity", "macos"]
+    },
+    "primaryCategory": "public.app-category.productivity",
+    "primaryLocale": "en-US",
+    "privacyPolicyURL": "https://markapp.io/privacy",
+    "supportURL": "https://markapp.io/support",
+    "marketingURL": "https://markapp.io"
+  }
+}
