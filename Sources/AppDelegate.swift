@@ -9,6 +9,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     func applicationDidFinishLaunching(_ notification: Notification) {
         settingsStore = SettingsStore()
         annotationService = AnnotationService(settings: settingsStore)
+        annotationService.setSettingsStore(settingsStore)
 
         overlayWindow = OverlayWindow(
             annotationService: annotationService,
@@ -45,6 +46,9 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
         viewMenu.addItem(withTitle: "Clear All Annotations", action: #selector(clearAnnotations), keyEquivalent: "k")
         viewMenu.addItem(NSMenuItem.separator())
+        viewMenu.addItem(withTitle: "Undo", action: #selector(undoAction), keyEquivalent: "z")
+        viewMenu.addItem(withTitle: "Redo", action: #selector(redoAction), keyEquivalent: "Z")
+        viewMenu.addItem(NSMenuItem.separator())
         viewMenu.addItem(withTitle: "Toggle Overlay", action: #selector(toggleOverlay), keyEquivalent: "o")
 
         // Tools menu
@@ -74,6 +78,16 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
     @objc private func clearAnnotations() {
         annotationService.clearAll()
+        overlayWindow.refreshAnnotationView()
+    }
+
+    @objc private func undoAction() {
+        annotationService.undo()
+        overlayWindow.refreshAnnotationView()
+    }
+
+    @objc private func redoAction() {
+        annotationService.redo()
         overlayWindow.refreshAnnotationView()
     }
 
@@ -214,6 +228,10 @@ class AnnotationView: NSView {
             drawRectangle(annotation, in: context)
         case .text:
             drawText(annotation, in: context)
+        case .freehand:
+            drawFreehand(annotation, in: context)
+        case .highlighter:
+            drawHighlighter(annotation, in: context)
         }
 
         context.restoreGState()
@@ -282,6 +300,36 @@ class AnnotationView: NSView {
         attributedString.draw(at: point)
     }
 
+    private func drawFreehand(_ annotation: Annotation, in context: CGContext) {
+        guard annotation.points.count > 1 else { return }
+
+        context.setStrokeColor(annotation.color.cgColor)
+        context.setLineWidth(annotation.strokeWidth)
+        context.setLineCap(.round)
+        context.setLineJoin(.round)
+
+        context.move(to: annotation.points[0])
+        for point in annotation.points.dropFirst() {
+            context.addLine(to: point)
+        }
+        context.strokePath()
+    }
+
+    private func drawHighlighter(_ annotation: Annotation, in context: CGContext) {
+        guard annotation.points.count > 1 else { return }
+
+        context.setStrokeColor(annotation.color.withAlphaComponent(0.35).cgColor)
+        context.setLineWidth(annotation.strokeWidth * 4)
+        context.setLineCap(.round)
+        context.setLineJoin(.round)
+
+        context.move(to: annotation.points[0])
+        for point in annotation.points.dropFirst() {
+            context.addLine(to: point)
+        }
+        context.strokePath()
+    }
+
     override func mouseDown(with event: NSEvent) {
         let point = convert(event.locationInWindow, from: nil)
         annotationService.beginAnnotation(at: point)
@@ -308,12 +356,9 @@ class ToolbarView: NSView {
     private weak var overlayWindow: OverlayWindow?
     private var toolButtons: [AnnotationTool: NSButton] = [:]
     private var strokeSlider: NSSlider!
-
-    private let toolColors: [(tool: AnnotationTool, color: NSColor)] = [
-        (.arrow, Theme.Color.red),
-        (.rectangle, Theme.Color.yellow),
-        (.text, Theme.Color.green)
-    ]
+    private var undoButton: NSButton!
+    private var redoButton: NSButton!
+    private var colorWellButton: NSButton!
 
     private let annotationColors: [NSColor] = [
         Theme.Color.red,
@@ -358,9 +403,11 @@ class ToolbarView: NSView {
         let toolTitles: [AnnotationTool: String] = [
             .arrow: "➤",
             .rectangle: "□",
-            .text: "T"
+            .text: "T",
+            .freehand: "✎",
+            .highlighter: "▬"
         ]
-        for tool in [AnnotationTool.arrow, .rectangle, .text] {
+        for tool in AnnotationTool.allCases {
             let button = NSButton(title: toolTitles[tool] ?? "", target: self, action: #selector(toolSelected(_:)))
             button.bezelStyle = .rounded
             button.tag = tool.rawValue
@@ -373,7 +420,23 @@ class ToolbarView: NSView {
         // Separator
         stackView.addArrangedSubview(createSeparator())
 
-        // Color buttons
+        // Color well button (opens NSColorPanel)
+        colorWellButton = NSButton()
+        colorWellButton.bezelStyle = .rounded
+        colorWellButton.isBordered = false
+        colorWellButton.wantsLayer = true
+        colorWellButton.layer?.backgroundColor = annotationService.strokeColor.cgColor
+        colorWellButton.layer?.cornerRadius = 10
+        colorWellButton.layer?.borderWidth = 2
+        colorWellButton.layer?.borderColor = NSColor.white.withAlphaComponent(0.5).cgColor
+        colorWellButton.widthAnchor.constraint(equalToConstant: 24).isActive = true
+        colorWellButton.heightAnchor.constraint(equalToConstant: 24).isActive = true
+        colorWellButton.target = self
+        colorWellButton.action = #selector(openColorPanel)
+        colorWellButton.toolTip = "Color Picker"
+        stackView.addArrangedSubview(colorWellButton)
+
+        // Color preset buttons
         for color in annotationColors {
             let button = NSButton()
             button.bezelStyle = .rounded
@@ -407,6 +470,22 @@ class ToolbarView: NSView {
         // Separator
         stackView.addArrangedSubview(createSeparator())
 
+        // Undo/Redo buttons
+        undoButton = NSButton(title: "↩", target: self, action: #selector(undoTapped))
+        undoButton.bezelStyle = .rounded
+        undoButton.widthAnchor.constraint(equalToConstant: 32).isActive = true
+        undoButton.toolTip = "Undo (⌘Z)"
+        stackView.addArrangedSubview(undoButton)
+
+        redoButton = NSButton(title: "↪", target: self, action: #selector(redoTapped))
+        redoButton.bezelStyle = .rounded
+        redoButton.widthAnchor.constraint(equalToConstant: 32).isActive = true
+        redoButton.toolTip = "Redo (⇧⌘Z)"
+        stackView.addArrangedSubview(redoButton)
+
+        // Separator
+        stackView.addArrangedSubview(createSeparator())
+
         // Clear button
         let clearButton = NSButton(title: "Clear", target: self, action: #selector(clearTapped))
         clearButton.bezelStyle = .rounded
@@ -431,14 +510,39 @@ class ToolbarView: NSView {
         refresh()
     }
 
+    @objc private func openColorPanel() {
+        let colorPanel = NSColorPanel.shared
+        colorPanel.setTarget(self)
+        colorPanel.setAction(#selector(colorPanelChanged(_:)))
+        colorPanel.color = annotationService.strokeColor
+        colorPanel.isContinuous = true
+        colorPanel.makeKeyAndOrderFront(nil)
+    }
+
+    @objc private func colorPanelChanged(_ sender: NSColorPanel) {
+        annotationService.strokeColor = sender.color
+        colorWellButton.layer?.backgroundColor = sender.color.cgColor
+    }
+
     @objc private func colorSelected(_ sender: NSButton) {
         guard let color = sender.layer?.backgroundColor.flatMap({ NSColor(cgColor: $0) }) else { return }
         annotationService.strokeColor = color
+        colorWellButton.layer?.backgroundColor = color.cgColor
         refresh()
     }
 
     @objc private func strokeChanged(_ sender: NSSlider) {
         annotationService.strokeWidth = CGFloat(sender.doubleValue)
+    }
+
+    @objc private func undoTapped() {
+        annotationService.undo()
+        overlayWindow?.refreshAnnotationView()
+    }
+
+    @objc private func redoTapped() {
+        annotationService.redo()
+        overlayWindow?.refreshAnnotationView()
     }
 
     @objc private func clearTapped() {
@@ -454,5 +558,7 @@ class ToolbarView: NSView {
                 : NSColor.clear.cgColor
             button.layer?.cornerRadius = 4
         }
+        undoButton.isEnabled = annotationService.undoManager.canUndo
+        redoButton.isEnabled = annotationService.undoManager.canRedo
     }
 }
