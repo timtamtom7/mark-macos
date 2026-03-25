@@ -570,6 +570,9 @@ class ToolbarView: NSView {
         layer?.borderWidth = 1
         layer?.borderColor = NSColor(white: 0.3, alpha: 1).cgColor
 
+        // Accessibility: mark as a toolbar
+        setAccessibility(label: "Annotation Toolbar", role: .toolbar)
+
         let stackView = NSStackView()
         stackView.orientation = .horizontal
         stackView.spacing = 8
@@ -596,6 +599,8 @@ class ToolbarView: NSView {
             button.tag = tool.rawValue
             button.widthAnchor.constraint(equalToConstant: 36).isActive = true
             button.heightAnchor.constraint(equalToConstant: 28).isActive = true
+            button.configureAsButton(label: "\(tool.title) tool", hint: "Switch to \(tool.title.lowercased()) annotation")
+            button.setAccessibilityRoleDescription(tool.title)
             toolButtons[tool] = button
             stackView.addArrangedSubview(button)
         }
@@ -617,10 +622,13 @@ class ToolbarView: NSView {
         colorWellButton.target = self
         colorWellButton.action = #selector(openColorPanel)
         colorWellButton.toolTip = "Color Picker"
+        colorWellButton.configureAsButton(label: "Color picker", hint: "Opens system color picker")
+        colorWellButton.setAccessibilityRoleDescription("Color picker")
         stackView.addArrangedSubview(colorWellButton)
 
         // Color preset buttons
-        for color in annotationColors {
+        let colorNames = ["Red", "Yellow", "Green", "Blue", "White"]
+        for (index, color) in annotationColors.enumerated() {
             let button = NSButton()
             button.bezelStyle = .rounded
             button.isBordered = false
@@ -633,6 +641,8 @@ class ToolbarView: NSView {
             button.heightAnchor.constraint(equalToConstant: 20).isActive = true
             button.target = self
             button.action = #selector(colorSelected(_:))
+            button.tag = index
+            button.configureAsButton(label: "\(colorNames[index]) color", hint: "Set annotation color to \(colorNames[index].lowercased())")
             stackView.addArrangedSubview(button)
         }
 
@@ -642,12 +652,15 @@ class ToolbarView: NSView {
         // Stroke width label
         let strokeLabel = NSTextField(labelWithString: "Stroke:")
         strokeLabel.textColor = .white
-        strokeLabel.font = NSFont.systemFont(ofSize: 11)
+        strokeLabel.font = NSFont.scaledFont(forTextStyle: .caption1)
+        strokeLabel.configureAsLabel(label: "Stroke width")
+        strokeLabel.setAccessibilityRoleDescription("Stroke width label")
         stackView.addArrangedSubview(strokeLabel)
 
         // Stroke width slider
         strokeSlider = NSSlider(value: 3, minValue: 1, maxValue: 10, target: self, action: #selector(strokeChanged))
         strokeSlider.widthAnchor.constraint(equalToConstant: 80).isActive = true
+        strokeSlider.setAccessibilityLabel("Stroke width")
         stackView.addArrangedSubview(strokeSlider)
 
         // Separator
@@ -658,12 +671,14 @@ class ToolbarView: NSView {
         undoButton.bezelStyle = .rounded
         undoButton.widthAnchor.constraint(equalToConstant: 32).isActive = true
         undoButton.toolTip = "Undo (⌘Z)"
+        undoButton.configureAsButton(label: "Undo", hint: "Undo last annotation (⌘Z)")
         stackView.addArrangedSubview(undoButton)
 
         redoButton = NSButton(title: "↪", target: self, action: #selector(redoTapped))
         redoButton.bezelStyle = .rounded
         redoButton.widthAnchor.constraint(equalToConstant: 32).isActive = true
         redoButton.toolTip = "Redo (⇧⌘Z)"
+        redoButton.configureAsButton(label: "Redo", hint: "Redo last undone annotation (⇧⌘Z)")
         stackView.addArrangedSubview(redoButton)
 
         // Separator
@@ -673,6 +688,7 @@ class ToolbarView: NSView {
         let clearButton = NSButton(title: "Clear", target: self, action: #selector(clearTapped))
         clearButton.bezelStyle = .rounded
         clearButton.setButtonType(.momentaryPushIn)
+        clearButton.configureAsButton(label: "Clear all", hint: "Remove all annotations from the overlay")
         stackView.addArrangedSubview(clearButton)
 
         refresh()
@@ -684,6 +700,7 @@ class ToolbarView: NSView {
         sep.layer?.backgroundColor = NSColor(white: 0.4, alpha: 1).cgColor
         sep.widthAnchor.constraint(equalToConstant: 1).isActive = true
         sep.heightAnchor.constraint(equalToConstant: 20).isActive = true
+        sep.setAccessibilityElement(false)
         return sep
     }
 
@@ -691,6 +708,7 @@ class ToolbarView: NSView {
         guard let tool = AnnotationTool(rawValue: sender.tag) else { return }
         annotationService.currentTool = tool
         refresh()
+        AccessibilityAnnouncer.shared.announce("Selected \(tool.title) tool")
     }
 
     @objc private func openColorPanel() {
@@ -721,16 +739,19 @@ class ToolbarView: NSView {
     @objc private func undoTapped() {
         annotationService.undo()
         overlayWindow?.refreshAnnotationView()
+        AccessibilityAnnouncer.shared.announce("Undone")
     }
 
     @objc private func redoTapped() {
         annotationService.redo()
         overlayWindow?.refreshAnnotationView()
+        AccessibilityAnnouncer.shared.announce("Redone")
     }
 
     @objc private func clearTapped() {
         annotationService.clearAll()
         overlayWindow?.refreshAnnotationView()
+        AccessibilityAnnouncer.shared.announce("All annotations cleared")
     }
 
     func refresh() {
@@ -740,6 +761,7 @@ class ToolbarView: NSView {
                 ? NSColor.selectedContentBackgroundColor.cgColor
                 : NSColor.clear.cgColor
             button.layer?.cornerRadius = 4
+            button.setAccessibilitySelected(isSelected)
         }
         undoButton.isEnabled = annotationService.undoManager.canUndo
         redoButton.isEnabled = annotationService.undoManager.canRedo

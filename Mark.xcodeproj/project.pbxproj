@@ -20,6 +20,7 @@
 		7490C34381B6FE128DC3C805 /* AnnotationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9DCE4825E59E9B2F422D37CA /* AnnotationService.swift */; };
 		7A3A8797D38C33D93107DA5E /* ICloudSyncService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C050D1DA1E80525AEE7898F7 /* ICloudSyncService.swift */; };
 		7C41CA2F387E445268A39E1D /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 387C6A098AE32BE043BE9477 /* main.swift */; };
+		9365B220BB816CA5A97D3D68 /* Accessibility.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72909691FBB3AEF978821C01 /* Accessibility.swift */; };
 		B98E8745E9981FFE77D3AA8D /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 776BF17670D69F76ACBA9FB4 /* AppDelegate.swift */; };
 		EB04B31650A0936DA1257862 /* ShortcutRecorderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41C5D95333A4D0C9DEE70AB2 /* ShortcutRecorderView.swift */; };
 		FC0084C7DE56ECF0481EE7BE /* MarkWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A39A77F89F1AD3E0739A85A /* MarkWidget.swift */; };
@@ -61,6 +62,7 @@
 		41C5D95333A4D0C9DEE70AB2 /* ShortcutRecorderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShortcutRecorderView.swift; sourceTree = "<group>"; };
 		48CF6595D8274E499BDF6E6C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		619E05957901766D69564BFD /* ImgurUploader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImgurUploader.swift; sourceTree = "<group>"; };
+		72909691FBB3AEF978821C01 /* Accessibility.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Accessibility.swift; sourceTree = "<group>"; };
 		776BF17670D69F76ACBA9FB4 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		7B42A2A364CA0F69EDDF273C /* ExportService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExportService.swift; sourceTree = "<group>"; };
 		9DCE4825E59E9B2F422D37CA /* AnnotationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnnotationService.swift; sourceTree = "<group>"; };
@@ -94,6 +96,7 @@
 		2DDB0083D8415570075AA3D0 /* Sources */ = {
 			isa = PBXGroup;
 			children = (
+				72909691FBB3AEF978821C01 /* Accessibility.swift */,
 				9DCE4825E59E9B2F422D37CA /* AnnotationService.swift */,
 				776BF17670D69F76ACBA9FB4 /* AppDelegate.swift */,
 				CFC074083C29A3F44B634A03 /* CloudExportService.swift */,
@@ -210,6 +213,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9365B220BB816CA5A97D3D68 /* Accessibility.swift in Sources */,
 				7490C34381B6FE128DC3C805 /* AnnotationService.swift in Sources */,
 				B98E8745E9981FFE77D3AA8D /* AppDelegate.swift in Sources */,
 				60C82377DF7DA9ADC40B12D4 /* CloudExportService.swift in Sources */,
