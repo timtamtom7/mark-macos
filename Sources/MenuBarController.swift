@@ -183,6 +183,7 @@ class PresetStore: ObservableObject {
 
     private let presetsKey = "annotationPresets"
     private let fileManager = FileManager.default
+    private let iCloudSync = ICloudSyncService.shared
 
     private var appSupportURL: URL {
         let urls = fileManager.urls(for: .applicationSupportDirectory, in: .userDomainMask)
@@ -197,6 +198,7 @@ class PresetStore: ObservableObject {
 
     init() {
         loadPresets()
+        syncWithICloud()
     }
 
     func loadPresets() {
@@ -218,8 +220,19 @@ class PresetStore: ObservableObject {
         do {
             let data = try JSONEncoder().encode(presets)
             try data.write(to: presetsFileURL)
+            // Sync to iCloud
+            iCloudSync.saveToUbiquitousStore(key: presetsKey, data: data)
         } catch {
             print("Failed to save presets: \(error)")
+        }
+    }
+
+    func syncWithICloud() {
+        iCloudSync.syncPresets(presets) { [weak self] merged in
+            guard let self = self else { return }
+            self.presets = merged
+            self.savePresets()
+            NotificationCenter.default.post(name: .presetsDidChange, object: nil)
         }
     }
 
@@ -248,6 +261,10 @@ class PresetStore: ObservableObject {
             AnnotationPreset(name: "Blue Thin", color: Theme.Color.blue, strokeWidth: 2.0, tool: .freehand)
         ]
     }
+}
+
+extension Notification.Name {
+    static let presetsDidChange = Notification.Name("presetsDidChange")
 }
 
 // MARK: - Preset Manager View Controller

@@ -6,6 +6,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     private var annotationService: AnnotationService!
     private var settingsStore: SettingsStore!
     private var exportService: ExportService!
+    private var cloudExportService: CloudExportService!
     private var menuBarController: MenuBarController!
     private var hotKeyManager: HotKeyManager!
 
@@ -28,6 +29,9 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             exportService: exportService,
             overlayWindow: overlayWindow
         )
+
+        // Cloud export
+        cloudExportService = CloudExportService()
 
         // Global hotkeys
         hotKeyManager = HotKeyManager.shared
@@ -111,6 +115,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         fileMenu.addItem(withTitle: "Export as PNG...", action: #selector(exportPNG), keyEquivalent: "e")
         fileMenu.addItem(withTitle: "Export as PDF...", action: #selector(exportPDF), keyEquivalent: "E")
         fileMenu.addItem(withTitle: "Copy to Clipboard", action: #selector(copyClipboard), keyEquivalent: "c")
+        fileMenu.addItem(NSMenuItem.separator())
+        fileMenu.addItem(withTitle: "Upload to Cloud...", action: #selector(uploadToCloud), keyEquivalent: "u")
 
         // View menu
         let viewMenuItem = NSMenuItem()
@@ -187,6 +193,29 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
     @objc private func copyClipboard() {
         exportService.copyToClipboard()
+    }
+
+    @objc private func uploadToCloud() {
+        guard let image = exportService.renderAnnotatedImage() else { return }
+        cloudExportService.uploadToCloud(image: image) { result in
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let url):
+                    NSPasteboard.general.clearContents()
+                    NSPasteboard.general.setString(url, forType: .string)
+                    self.showNotification(title: "Uploaded!", message: "URL: \(url)")
+                case .failure(let error):
+                    self.showNotification(title: "Upload Failed", message: error.localizedDescription)
+                }
+            }
+        }
+    }
+
+    private func showNotification(title: String, message: String) {
+        let notification = NSUserNotification()
+        notification.title = title
+        notification.informativeText = message
+        NSUserNotificationCenter.default.deliver(notification)
     }
 
     @objc private func showShortcutsSettings() {
