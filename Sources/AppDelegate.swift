@@ -6,6 +6,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     private var annotationService: AnnotationService!
     private var settingsStore: SettingsStore!
     private var exportService: ExportService!
+    private var menuBarController: MenuBarController!
+    private var hotKeyManager: HotKeyManager!
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         settingsStore = SettingsStore()
@@ -20,8 +22,59 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
         exportService = ExportService(annotationService: annotationService, overlayWindow: overlayWindow)
 
+        // Menu bar
+        menuBarController = MenuBarController(
+            annotationService: annotationService,
+            exportService: exportService,
+            overlayWindow: overlayWindow
+        )
+
+        // Global hotkeys
+        hotKeyManager = HotKeyManager.shared
+        hotKeyManager.setCallback { [weak self] action in
+            self?.handleHotkeyAction(action)
+        }
+        hotKeyManager.start()
+
         setupMenu()
         NSApp.setActivationPolicy(.accessory)
+    }
+
+    private func handleHotkeyAction(_ action: HotkeyAction) {
+        switch action {
+        case .toggleOverlay:
+            if overlayWindow.isVisible {
+                overlayWindow.orderOut(nil)
+            } else {
+                overlayWindow.makeKeyAndOrderFront(nil)
+            }
+        case .clearAnnotations:
+            annotationService.clearAll()
+            overlayWindow.refreshAnnotationView()
+        case .undo:
+            annotationService.undo()
+            overlayWindow.refreshAnnotationView()
+        case .redo:
+            annotationService.redo()
+            overlayWindow.refreshAnnotationView()
+        case .captureScreen:
+            exportService.captureScreen()
+        case .selectArrow:
+            annotationService.currentTool = .arrow
+            overlayWindow.updateToolbar()
+        case .selectRectangle:
+            annotationService.currentTool = .rectangle
+            overlayWindow.updateToolbar()
+        case .selectText:
+            annotationService.currentTool = .text
+            overlayWindow.updateToolbar()
+        case .selectFreehand:
+            annotationService.currentTool = .freehand
+            overlayWindow.updateToolbar()
+        case .selectHighlighter:
+            annotationService.currentTool = .highlighter
+            overlayWindow.updateToolbar()
+        }
     }
 
     func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool {
@@ -88,6 +141,10 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         let settingsMenu = NSMenu(title: "Settings")
         settingsMenuItem.submenu = settingsMenu
 
+        settingsMenu.addItem(withTitle: "Keyboard Shortcuts...", action: #selector(showShortcutsSettings), keyEquivalent: ",")
+        settingsMenu.addItem(withTitle: "Manage Presets...", action: #selector(showPresetManager), keyEquivalent: "")
+        settingsMenu.addItem(NSMenuItem.separator())
+
         settingsMenu.addItem(withTitle: "Red", action: #selector(setColorRed), keyEquivalent: "r")
         settingsMenu.addItem(withTitle: "Blue", action: #selector(setColorBlue), keyEquivalent: "b")
         settingsMenu.addItem(withTitle: "Green", action: #selector(setColorGreen), keyEquivalent: "g")
@@ -130,6 +187,34 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
     @objc private func copyClipboard() {
         exportService.copyToClipboard()
+    }
+
+    @objc private func showShortcutsSettings() {
+        let vc = ShortcutsSettingsViewController()
+        let panel = NSPanel(
+            contentRect: NSRect(x: 0, y: 0, width: 500, height: 400),
+            styleMask: [.titled, .closable],
+            backing: .buffered,
+            defer: false
+        )
+        panel.contentViewController = vc
+        panel.title = "Keyboard Shortcuts"
+        panel.center()
+        panel.makeKeyAndOrderFront(nil)
+    }
+
+    @objc private func showPresetManager() {
+        let vc = PresetManagerViewController()
+        let panel = NSPanel(
+            contentRect: NSRect(x: 0, y: 0, width: 400, height: 300),
+            styleMask: [.titled, .closable],
+            backing: .buffered,
+            defer: false
+        )
+        panel.contentViewController = vc
+        panel.title = "Manage Presets"
+        panel.center()
+        panel.makeKeyAndOrderFront(nil)
     }
 
     @objc private func toggleOverlay() {

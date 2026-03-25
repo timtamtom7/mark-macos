@@ -2,7 +2,7 @@ import AppKit
 
 // MARK: - Annotation Tool
 
-enum AnnotationTool: Int, CaseIterable {
+enum AnnotationTool: Int, CaseIterable, Codable {
     case arrow = 0
     case rectangle = 1
     case text = 2
