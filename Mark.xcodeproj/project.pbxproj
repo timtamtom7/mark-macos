@@ -25,6 +25,7 @@
 		AA17356EE186685CA983B210 /* OnboardingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D19C5250860C07AEC7EC1D6C /* OnboardingViewController.swift */; };
 		B98E8745E9981FFE77D3AA8D /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 776BF17670D69F76ACBA9FB4 /* AppDelegate.swift */; };
 		BDAC56852D1FA4B3064975CB /* Design.swift in Sources */ = {isa = PBXBuildFile; fileRef = A480231218C429E41D0BA956 /* Design.swift */; };
+		CCB33D46C951446277CE7EE0 /* MarkR12R15.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8643A5F07B0FF06F00E0F8D /* MarkR12R15.swift */; };
 		D2EA435FDB228B3D26EB9A51 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = FCB3675A81505619A643984F /* Localizable.strings */; };
 		EB04B31650A0936DA1257862 /* ShortcutRecorderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41C5D95333A4D0C9DEE70AB2 /* ShortcutRecorderView.swift */; };
 		FC0084C7DE56ECF0481EE7BE /* MarkWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A39A77F89F1AD3E0739A85A /* MarkWidget.swift */; };
@@ -76,6 +77,7 @@
 		9DCE4825E59E9B2F422D37CA /* AnnotationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnnotationService.swift; sourceTree = "<group>"; };
 		A480231218C429E41D0BA956 /* Design.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Design.swift; sourceTree = "<group>"; };
 		A4B8A16A02F0D4569D1E23FC /* HotKeyManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HotKeyManager.swift; sourceTree = "<group>"; };
+		A8643A5F07B0FF06F00E0F8D /* MarkR12R15.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarkR12R15.swift; sourceTree = "<group>"; };
 		C050D1DA1E80525AEE7898F7 /* ICloudSyncService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ICloudSyncService.swift; sourceTree = "<group>"; };
 		C3D838EA20F9D9EE48B7E714 /* Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Theme.swift; sourceTree = "<group>"; };
 		CFC074083C29A3F44B634A03 /* CloudExportService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloudExportService.swift; sourceTree = "<group>"; };
@@ -128,9 +130,18 @@
 				D1C4A2CAE47560AF207D0E82 /* SettingsStore.swift */,
 				41C5D95333A4D0C9DEE70AB2 /* ShortcutRecorderView.swift */,
 				C3D838EA20F9D9EE48B7E714 /* Theme.swift */,
+				5708739AC154C7E266B90B00 /* Models */,
 				9182A462F68FC99494432930 /* Resources */,
 			);
 			path = Sources;
+			sourceTree = "<group>";
+		};
+		5708739AC154C7E266B90B00 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				A8643A5F07B0FF06F00E0F8D /* MarkR12R15.swift */,
+			);
+			path = Models;
 			sourceTree = "<group>";
 		};
 		9182A462F68FC99494432930 /* Resources */ = {
@@ -263,6 +274,7 @@
 				7A3A8797D38C33D93107DA5E /* ICloudSyncService.swift in Sources */,
 				4CBE58BC814D3E0ADBD2A7BE /* ImgurUploader.swift in Sources */,
 				5429ED6E6AD8FD7169C27B8F /* MarkIntents.swift in Sources */,
+				CCB33D46C951446277CE7EE0 /* MarkR12R15.swift in Sources */,
 				3C41340A60CB4C32213E51B4 /* MenuBarController.swift in Sources */,
 				AA17356EE186685CA983B210 /* OnboardingViewController.swift in Sources */,
 				7017EDFFBBBA187765E2945A /* SettingsStore.swift in Sources */,
