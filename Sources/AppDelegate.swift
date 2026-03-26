@@ -1,4 +1,5 @@
 import AppKit
+import UserNotifications
 import SwiftUI
 
 class AppDelegate: NSObject, NSApplicationDelegate {
@@ -260,10 +261,16 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     private func showNotification(title: String, message: String) {
-        let notification = NSUserNotification()
-        notification.title = title
-        notification.informativeText = message
-        NSUserNotificationCenter.default.deliver(notification)
+        let center = UNUserNotificationCenter.current()
+        center.requestAuthorization(options: [.alert, .sound]) { granted, _ in
+            guard granted else { return }
+            let content = UNMutableNotificationContent()
+            content.title = title
+            content.body = message
+            let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 0.1, repeats: false)
+            let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: trigger)
+            center.add(request)
+        }
     }
 
     @objc private func showShortcutsSettings() {
@@ -394,13 +401,14 @@ class AnnotationView: NSView {
         if let ta = trackingArea {
             removeTrackingArea(ta)
         }
-        trackingArea = NSTrackingArea(
+        let newArea = NSTrackingArea(
             rect: bounds,
             options: [.activeAlways, .mouseMoved, .mouseEnteredAndExited],
             owner: self,
             userInfo: nil
         )
-        addTrackingArea(trackingArea!)
+        trackingArea = newArea
+        addTrackingArea(newArea)
     }
 
     override func draw(_ dirtyRect: NSRect) {

@@ -5,8 +5,15 @@ class ImgurUploader: UploadProvider {
     let name = "Imgur (Anonymous)"
 
     // Note: In production, use your own Imgur Client-ID registered at https://api.imgur.com/oauth2/addclient
-    // For development/testing, this uses Imgur's anonymous API
-    private let clientID = "YEuW7H4G3bVPeiAqmj0eLvJZ3n7xnT4Q"  // Demo client ID
+    // For development/testing, this reads from Info.plist or environment. NEVER hardcode client secrets.
+    private var clientID: String {
+        // Check environment first (for CI/testing), then Info.plist, then fall back to placeholder
+        if let env = ProcessInfo.processInfo.environment["MARK_IMGUR_CLIENT_ID"], !env.isEmpty {
+            return env
+        }
+        return Bundle.main.object(forInfoDictionaryKey: "ImgurClientID") as? String
+            ?? "YOUR_IMGUR_CLIENT_ID_HERE"
+    }
     private let uploadEndpoint = URL(string: "https://api.imgur.com/3/image")!
 
     func upload(image: NSImage, completion: @escaping (Result<String, Error>) -> Void) {

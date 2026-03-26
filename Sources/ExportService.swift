@@ -1,5 +1,6 @@
 import AppKit
 import PDFKit
+import UserNotifications
 
 class ExportService {
     private let annotationService: AnnotationService
@@ -53,7 +54,7 @@ class ExportService {
         let screenFrame = NSScreen.main?.frame ?? NSRect(x: 0, y: 0, width: 1920, height: 1080)
 
         // Single page for now — the overlay covers the whole screen
-        let pageRect = CGRect(origin: .zero, size: screenFrame.size)
+        _ = CGRect(origin: .zero, size: screenFrame.size)
 
         guard let image = renderAnnotatedImage() else { return }
 
@@ -176,7 +177,7 @@ class ExportService {
     func renderAnnotatedImage() -> NSImage? {
         guard let screen = NSScreen.main else { return nil }
         let screenRect = screen.frame
-        let scale: CGFloat = 2.0  // Retina
+        // Note: scale factor handled by NSScreen.main?.backingScaleFactor if needed for Retina
 
         let image = NSImage(size: screenRect.size)
         image.lockFocus()
@@ -302,10 +303,16 @@ class ExportService {
     }
 
     private func showNotification(title: String, message: String) {
-        let notification = NSUserNotification()
-        notification.title = title
-        notification.informativeText = message
-        NSUserNotificationCenter.default.deliver(notification)
+        let center = UNUserNotificationCenter.current()
+        center.requestAuthorization(options: [.alert, .sound]) { granted, _ in
+            guard granted else { return }
+            let content = UNMutableNotificationContent()
+            content.title = title
+            content.body = message
+            let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 0.1, repeats: false)
+            let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: trigger)
+            center.add(request)
+        }
     }
 }
 
