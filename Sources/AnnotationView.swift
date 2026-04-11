@@ -133,7 +133,7 @@ class AnnotationView: NSView {
         let deleteItem = NSMenuItem(title: "Delete", action: #selector(deleteAnnotation(_:)), keyEquivalent: "")
         deleteItem.representedObject = annotationId
         deleteItem.target = self
-        deleteItem.accessibilityLabel = "Delete this annotation"
+        deleteItem.setAccessibilityLabel("Delete this annotation")
         menu.addItem(deleteItem)
 
         guard let contentView = self.window?.contentView else { return }

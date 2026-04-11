@@ -31,11 +31,11 @@ class MenuBarController {
         let menu = NSMenu()
 
         let showItem = NSMenuItem(title: "Show Overlay", action: #selector(showOverlay), keyEquivalent: "")
-        showItem.accessibilityLabel = "Show Mark overlay"
+        showItem.setAccessibilityLabel("Show Mark overlay")
         menu.addItem(showItem)
 
         let hideItem = NSMenuItem(title: "Hide Overlay", action: #selector(hideOverlay), keyEquivalent: "")
-        hideItem.accessibilityLabel = "Hide Mark overlay"
+        hideItem.setAccessibilityLabel("Hide Mark overlay")
         menu.addItem(hideItem)
 
         menu.addItem(NSMenuItem.separator())
@@ -44,10 +44,10 @@ class MenuBarController {
         let captureItem = menu.addItem(withTitle: "Capture", action: nil, keyEquivalent: "")
         captureItem.submenu = captureMenu
         let captureScreenItem = NSMenuItem(title: "Capture Screen", action: #selector(captureScreen), keyEquivalent: "")
-        captureScreenItem.accessibilityLabel = "Capture entire screen with Mark annotations"
+        captureScreenItem.setAccessibilityLabel("Capture entire screen with Mark annotations")
         captureMenu.addItem(captureScreenItem)
         let captureWindowItem = NSMenuItem(title: "Capture Window", action: #selector(captureWindow), keyEquivalent: "")
-        captureWindowItem.accessibilityLabel = "Capture selected window with Mark annotations"
+        captureWindowItem.setAccessibilityLabel("Capture selected window with Mark annotations")
         captureMenu.addItem(captureWindowItem)
 
         menu.addItem(NSMenuItem.separator())
@@ -60,7 +60,7 @@ class MenuBarController {
             let item = NSMenuItem(title: tool.title, action: #selector(selectTool(_:)), keyEquivalent: "")
             item.tag = tool.rawValue
             item.target = self
-            item.accessibilityLabel = "\(tool.title) annotation tool"
+            item.setAccessibilityLabel("\(tool.title) annotation tool")
             toolsMenu.addItem(item)
         }
 
@@ -75,7 +75,7 @@ class MenuBarController {
             let item = NSMenuItem(title: preset.name, action: #selector(applyPreset(_:)), keyEquivalent: "")
             item.representedObject = preset
             item.target = self
-            item.accessibilityLabel = "Apply preset: \(preset.name)"
+            item.setAccessibilityLabel("Apply preset: \(preset.name)")
             presetsMenu.addItem(item)
         }
 
@@ -87,18 +87,18 @@ class MenuBarController {
 
         presetsMenu.addItem(NSMenuItem.separator())
         let managePresetsItem = NSMenuItem(title: "Manage Presets...", action: #selector(managePresets), keyEquivalent: "")
-        managePresetsItem.accessibilityLabel = "Open preset manager"
+        managePresetsItem.setAccessibilityLabel("Open preset manager")
         presetsMenu.addItem(managePresetsItem)
 
         menu.addItem(NSMenuItem.separator())
 
         let clearItem = NSMenuItem(title: "Clear Annotations", action: #selector(clearAnnotations), keyEquivalent: "")
-        clearItem.accessibilityLabel = "Clear all annotations"
+        clearItem.setAccessibilityLabel("Clear all annotations")
         menu.addItem(clearItem)
 
         menu.addItem(NSMenuItem.separator())
         let quitItem = NSMenuItem(title: "Quit Mark", action: #selector(quitApp), keyEquivalent: "")
-        quitItem.accessibilityLabel = "Quit Mark application"
+        quitItem.setAccessibilityLabel("Quit Mark application")
         menu.addItem(quitItem)
 
         return menu
