@@ -1,6 +1,9 @@
 import AppKit
 import UserNotifications
 import SwiftUI
+import os.log
+
+private let logger = Logger(subsystem: "com.mark.macos", category: "AppDelegate")
 
 class AppDelegate: NSObject, NSApplicationDelegate {
     private var overlayWindow: OverlayWindow!
@@ -14,7 +17,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     func applicationDidFinishLaunching(_ notification: Notification) {
         settingsStore = SettingsStore()
         annotationService = AnnotationService(settings: settingsStore)
-        annotationService.setSettingsStore(settingsStore)
 
         overlayWindow = OverlayWindow(
             annotationService: annotationService,
@@ -83,8 +85,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             if let components = URLComponents(url: url, resolvingAgainstBaseURL: false),
                let fileItem = components.queryItems?.first(where: { $0.name == "file" }),
                let filePath = fileItem.value {
-                // Open file for annotation
-                print("Open file: \(filePath)")
+                logger.info("Opening file: \(filePath, privacy: .public)")
             }
         case "capture":
             exportService.captureScreen()
@@ -166,6 +167,11 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         fileMenu.addItem(withTitle: "Copy to Clipboard", action: #selector(copyClipboard), keyEquivalent: "c")
         fileMenu.addItem(NSMenuItem.separator())
         fileMenu.addItem(withTitle: "Upload to Cloud...", action: #selector(uploadToCloud), keyEquivalent: "u")
+        fileMenu.addItem(NSMenuItem.separator())
+        fileMenu.addItem(withTitle: "Save Session...", action: #selector(saveSession), keyEquivalent: "S")
+        fileMenu.addItem(withTitle: "Load Session...", action: #selector(loadSession), keyEquivalent: "l")
+        fileMenu.addItem(NSMenuItem.separator())
+        fileMenu.addItem(withTitle: "Sync from iCloud", action: #selector(syncFromICloud), keyEquivalent: "")
 
         // View menu
         let viewMenuItem = NSMenuItem()
@@ -329,469 +335,82 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     @objc private func setColorGreen() { annotationService.strokeColor = Theme.Color.green }
     @objc private func setColorYellow() { annotationService.strokeColor = Theme.Color.yellow }
     @objc private func setColorWhite() { annotationService.strokeColor = Theme.Color.white }
-}
 
-// MARK: - Overlay Window
+    @objc private func saveSession() {
+        let alert = NSAlert()
+        alert.messageText = "Save Session"
+        alert.informativeText = "Enter a name for this annotation session:"
+        alert.alertStyle = .informational
+        alert.addButton(withTitle: "Save")
+        alert.addButton(withTitle: "Cancel")
 
-class OverlayWindow: NSPanel {
-    private let annotationService: AnnotationService
-    private let settings: SettingsStore
-    private var annotationView: AnnotationView!
-    private var toolbarView: ToolbarView!
+        let textField = NSTextField(frame: NSRect(x: 0, y: 0, width: 250, height: 24))
+        textField.placeholderString = "Session name"
+        alert.accessoryView = textField
 
-    init(annotationService: AnnotationService, settings: SettingsStore) {
-        self.annotationService = annotationService
-        self.settings = settings
-
-        let screenFrame = NSScreen.main?.frame ?? NSRect(x: 0, y: 0, width: 1920, height: 1080)
-
-        super.init(
-            contentRect: screenFrame,
-            styleMask: [.borderless, .nonactivatingPanel],
-            backing: .buffered,
-            defer: false
-        )
-
-        self.level = .floating
-        self.collectionBehavior = [.canJoinAllSpaces, .fullScreenAuxiliary]
-        self.isOpaque = false
-        self.backgroundColor = .clear
-        self.hasShadow = false
-        self.ignoresMouseEvents = false
-        self.acceptsMouseMovedEvents = true
-        self.isMovableByWindowBackground = false
-
-        annotationView = AnnotationView(frame: screenFrame, annotationService: annotationService)
-        toolbarView = ToolbarView(annotationService: annotationService, settings: settings, overlayWindow: self)
-
-        let containerView = NSView(frame: screenFrame)
-        containerView.addSubview(annotationView)
-        containerView.addSubview(toolbarView)
-
-        self.contentView = containerView
+        if let window = NSApp.keyWindow {
+            alert.beginSheetModal(for: window) { response in
+                if response == .alertFirstButtonReturn {
+                    let name = textField.stringValue.isEmpty ? "Untitled" : textField.stringValue
+                    do {
+                        try self.annotationService.saveAnnotations(name: name)
+                        self.showNotification(title: "Saved", message: "Session '\(name)' saved successfully.")
+                    } catch {
+                        self.showNotification(title: "Error", message: "Failed to save session.")
+                    }
+                }
+            }
+        }
     }
 
-    func refreshAnnotationView() {
-        annotationView.needsDisplay = true
+    @objc private func loadSession() {
+        let sessions = annotationService.savedSessionNames
+        guard !sessions.isEmpty else {
+            showNotification(title: "No Sessions", message: "No saved sessions found.")
+            return
+        }
+
+        let alert = NSAlert()
+        alert.messageText = "Load Session"
+        alert.informativeText = "Select a session to load:"
+        alert.alertStyle = .informational
+        alert.addButton(withTitle: "Load")
+        alert.addButton(withTitle: "Cancel")
+
+        let popup = NSPopUpButton(frame: NSRect(x: 0, y: 0, width: 250, height: 24))
+        for session in sessions {
+            popup.addItem(withTitle: session)
+        }
+        alert.accessoryView = popup
+
+        if let window = NSApp.keyWindow {
+            alert.beginSheetModal(for: window) { response in
+                if response == .alertFirstButtonReturn {
+                    if let selected = popup.titleOfSelectedItem {
+                        do {
+                            try self.annotationService.loadAnnotations(name: selected)
+                            self.overlayWindow.refreshAnnotationView()
+                            self.showNotification(title: "Loaded", message: "Session '\(selected)' loaded.")
+                        } catch {
+                            self.showNotification(title: "Error", message: "Failed to load session.")
+                        }
+                    }
+                }
+            }
+        }
     }
 
-    func updateToolbar() {
-        toolbarView.refresh()
+    @objc private func syncFromICloud() {
+        AnnotationStorage.shared.syncFromICloud { [weak self] syncedNames in
+            if syncedNames.isEmpty {
+                self?.showNotification(title: "Sync Complete", message: "No new sessions found on iCloud.")
+            } else {
+                self?.showNotification(title: "Synced", message: "Synced \(syncedNames.count) session(s) from iCloud.")
+            }
+        }
     }
 }
 
 // MARK: - Annotation View
 
-class AnnotationView: NSView {
-    private let annotationService: AnnotationService
-    private var trackingArea: NSTrackingArea?
-
-    init(frame: NSRect, annotationService: AnnotationService) {
-        self.annotationService = annotationService
-        super.init(frame: frame)
-        self.wantsLayer = true
-    }
-
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-
-    override func updateTrackingAreas() {
-        super.updateTrackingAreas()
-        if let ta = trackingArea {
-            removeTrackingArea(ta)
-        }
-        let newArea = NSTrackingArea(
-            rect: bounds,
-            options: [.activeAlways, .mouseMoved, .mouseEnteredAndExited],
-            owner: self,
-            userInfo: nil
-        )
-        trackingArea = newArea
-        addTrackingArea(newArea)
-    }
-
-    override func draw(_ dirtyRect: NSRect) {
-        guard let context = NSGraphicsContext.current?.cgContext else { return }
-        context.clear(bounds)
-
-        for annotation in annotationService.annotations {
-            drawAnnotation(annotation, in: context)
-        }
-
-        if let current = annotationService.currentAnnotation {
-            drawAnnotation(current, in: context)
-        }
-    }
-
-    private func drawAnnotation(_ annotation: Annotation, in context: CGContext) {
-        context.saveGState()
-        context.setStrokeColor(annotation.color.cgColor)
-        context.setFillColor(annotation.color.withAlphaComponent(0.1).cgColor)
-        context.setLineWidth(annotation.strokeWidth)
-        context.setLineCap(.round)
-        context.setLineJoin(.round)
-
-        switch annotation.tool {
-        case .arrow:
-            drawArrow(annotation, in: context)
-        case .rectangle:
-            drawRectangle(annotation, in: context)
-        case .text:
-            drawText(annotation, in: context)
-        case .freehand:
-            drawFreehand(annotation, in: context)
-        case .highlighter:
-            drawHighlighter(annotation, in: context)
-        }
-
-        context.restoreGState()
-    }
-
-    private func drawArrow(_ annotation: Annotation, in context: CGContext) {
-        let start = annotation.startPoint
-        let end = annotation.endPoint
-
-        // Draw main line
-        context.move(to: start)
-        context.addLine(to: end)
-        context.strokePath()
-
-        // Draw arrowhead
-        let angle = atan2(end.y - start.y, end.x - start.x)
-        let arrowLength: CGFloat = 20
-        let arrowAngle: CGFloat = .pi / 6
-
-        let point1 = CGPoint(
-            x: end.x - arrowLength * cos(angle - arrowAngle),
-            y: end.y - arrowLength * sin(angle - arrowAngle)
-        )
-        let point2 = CGPoint(
-            x: end.x - arrowLength * cos(angle + arrowAngle),
-            y: end.y - arrowLength * sin(angle + arrowAngle)
-        )
-
-        context.move(to: end)
-        context.addLine(to: point1)
-        context.move(to: end)
-        context.addLine(to: point2)
-        context.strokePath()
-    }
-
-    private func drawRectangle(_ annotation: Annotation, in context: CGContext) {
-        let rect = NSRect(
-            x: min(annotation.startPoint.x, annotation.endPoint.x),
-            y: min(annotation.startPoint.y, annotation.endPoint.y),
-            width: abs(annotation.endPoint.x - annotation.startPoint.x),
-            height: abs(annotation.endPoint.y - annotation.startPoint.y)
-        )
-        context.stroke(rect)
-    }
-
-    private func drawText(_ annotation: Annotation, in context: CGContext) {
-        let text = annotation.text ?? ""
-        guard !text.isEmpty else { return }
-
-        let attributes: [NSAttributedString.Key: Any] = [
-            .font: NSFont.systemFont(ofSize: annotation.strokeWidth * 8, weight: .semibold),
-            .foregroundColor: annotation.color
-        ]
-
-        let attributedString = NSAttributedString(string: text, attributes: attributes)
-        let textSize = attributedString.size()
-
-        let point = annotation.startPoint
-
-        // Draw background
-        let bgRect = NSRect(x: point.x - 4, y: point.y - 2, width: textSize.width + 8, height: textSize.height + 4)
-        context.setFillColor(annotation.color.withAlphaComponent(0.15).cgColor)
-        context.fill(bgRect)
-
-        // Draw text
-        attributedString.draw(at: point)
-    }
-
-    private func drawFreehand(_ annotation: Annotation, in context: CGContext) {
-        guard annotation.points.count > 1 else { return }
-
-        context.setStrokeColor(annotation.color.cgColor)
-        context.setLineWidth(annotation.strokeWidth)
-        context.setLineCap(.round)
-        context.setLineJoin(.round)
-
-        context.move(to: annotation.points[0])
-        for point in annotation.points.dropFirst() {
-            context.addLine(to: point)
-        }
-        context.strokePath()
-    }
-
-    private func drawHighlighter(_ annotation: Annotation, in context: CGContext) {
-        guard annotation.points.count > 1 else { return }
-
-        context.setStrokeColor(annotation.color.withAlphaComponent(0.35).cgColor)
-        context.setLineWidth(annotation.strokeWidth * 4)
-        context.setLineCap(.round)
-        context.setLineJoin(.round)
-
-        context.move(to: annotation.points[0])
-        for point in annotation.points.dropFirst() {
-            context.addLine(to: point)
-        }
-        context.strokePath()
-    }
-
-    override func mouseDown(with event: NSEvent) {
-        let point = convert(event.locationInWindow, from: nil)
-        annotationService.beginAnnotation(at: point)
-    }
-
-    override func mouseDragged(with event: NSEvent) {
-        let point = convert(event.locationInWindow, from: nil)
-        annotationService.updateAnnotation(to: point)
-        needsDisplay = true
-    }
-
-    override func mouseUp(with event: NSEvent) {
-        let point = convert(event.locationInWindow, from: nil)
-        annotationService.endAnnotation(at: point)
-        needsDisplay = true
-    }
-}
-
 // MARK: - Toolbar View
-
-class ToolbarView: NSView {
-    private let annotationService: AnnotationService
-    private let settings: SettingsStore
-    private weak var overlayWindow: OverlayWindow?
-    private var toolButtons: [AnnotationTool: NSButton] = [:]
-    private var strokeSlider: NSSlider!
-    private var undoButton: NSButton!
-    private var redoButton: NSButton!
-    private var colorWellButton: NSButton!
-
-    private let annotationColors: [NSColor] = [
-        Theme.Color.red,
-        Theme.Color.yellow,
-        Theme.Color.green,
-        Theme.Color.blue,
-        Theme.Color.white
-    ]
-
-    init(annotationService: AnnotationService, settings: SettingsStore, overlayWindow: OverlayWindow) {
-        self.annotationService = annotationService
-        self.settings = settings
-        self.overlayWindow = overlayWindow
-        super.init(frame: .zero)
-        setupUI()
-    }
-
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-
-    private func setupUI() {
-        wantsLayer = true
-        layer?.backgroundColor = NSColor(white: 0.1, alpha: 0.85).cgColor
-        layer?.cornerRadius = 12
-        layer?.borderWidth = 1
-        layer?.borderColor = NSColor(white: 0.3, alpha: 1).cgColor
-
-        // Accessibility: mark as a toolbar
-        setAccessibility(label: "Annotation Toolbar", role: .toolbar)
-
-        let stackView = NSStackView()
-        stackView.orientation = .horizontal
-        stackView.spacing = 8
-        stackView.edgeInsets = NSEdgeInsets(top: 8, left: 12, bottom: 8, right: 12)
-        stackView.translatesAutoresizingMaskIntoConstraints = false
-        addSubview(stackView)
-
-        NSLayoutConstraint.activate([
-            stackView.centerXAnchor.constraint(equalTo: centerXAnchor),
-            stackView.centerYAnchor.constraint(equalTo: centerYAnchor, constant: -300)
-        ])
-
-        // Tool buttons
-        let toolTitles: [AnnotationTool: String] = [
-            .arrow: "➤",
-            .rectangle: "□",
-            .text: "T",
-            .freehand: "✎",
-            .highlighter: "▬"
-        ]
-        for tool in AnnotationTool.allCases {
-            let button = NSButton(title: toolTitles[tool] ?? "", target: self, action: #selector(toolSelected(_:)))
-            button.bezelStyle = .rounded
-            button.tag = tool.rawValue
-            button.widthAnchor.constraint(equalToConstant: 36).isActive = true
-            button.heightAnchor.constraint(equalToConstant: 28).isActive = true
-            button.configureAsButton(label: "\(tool.title) tool", hint: "Switch to \(tool.title.lowercased()) annotation")
-            button.setAccessibilityRoleDescription(tool.title)
-            toolButtons[tool] = button
-            stackView.addArrangedSubview(button)
-        }
-
-        // Separator
-        stackView.addArrangedSubview(createSeparator())
-
-        // Color well button (opens NSColorPanel)
-        colorWellButton = NSButton()
-        colorWellButton.bezelStyle = .rounded
-        colorWellButton.isBordered = false
-        colorWellButton.wantsLayer = true
-        colorWellButton.layer?.backgroundColor = annotationService.strokeColor.cgColor
-        colorWellButton.layer?.cornerRadius = 10
-        colorWellButton.layer?.borderWidth = 2
-        colorWellButton.layer?.borderColor = NSColor.white.withAlphaComponent(0.5).cgColor
-        colorWellButton.widthAnchor.constraint(equalToConstant: 24).isActive = true
-        colorWellButton.heightAnchor.constraint(equalToConstant: 24).isActive = true
-        colorWellButton.target = self
-        colorWellButton.action = #selector(openColorPanel)
-        colorWellButton.toolTip = "Color Picker"
-        colorWellButton.configureAsButton(label: "Color picker", hint: "Opens system color picker")
-        colorWellButton.setAccessibilityRoleDescription("Color picker")
-        stackView.addArrangedSubview(colorWellButton)
-
-        // Color preset buttons
-        let colorNames = ["Red", "Yellow", "Green", "Blue", "White"]
-        for (index, color) in annotationColors.enumerated() {
-            let button = NSButton()
-            button.bezelStyle = .rounded
-            button.isBordered = false
-            button.wantsLayer = true
-            button.layer?.backgroundColor = color.cgColor
-            button.layer?.cornerRadius = 8
-            button.layer?.borderWidth = 1
-            button.layer?.borderColor = NSColor.white.withAlphaComponent(0.3).cgColor
-            button.widthAnchor.constraint(equalToConstant: 20).isActive = true
-            button.heightAnchor.constraint(equalToConstant: 20).isActive = true
-            button.target = self
-            button.action = #selector(colorSelected(_:))
-            button.tag = index
-            button.configureAsButton(label: "\(colorNames[index]) color", hint: "Set annotation color to \(colorNames[index].lowercased())")
-            stackView.addArrangedSubview(button)
-        }
-
-        // Separator
-        stackView.addArrangedSubview(createSeparator())
-
-        // Stroke width label
-        let strokeLabel = NSTextField(labelWithString: "Stroke:")
-        strokeLabel.textColor = .white
-        strokeLabel.font = NSFont.scaledFont(forTextStyle: .caption1)
-        strokeLabel.configureAsLabel(label: "Stroke width")
-        strokeLabel.setAccessibilityRoleDescription("Stroke width label")
-        stackView.addArrangedSubview(strokeLabel)
-
-        // Stroke width slider
-        strokeSlider = NSSlider(value: 3, minValue: 1, maxValue: 10, target: self, action: #selector(strokeChanged))
-        strokeSlider.widthAnchor.constraint(equalToConstant: 80).isActive = true
-        strokeSlider.setAccessibilityLabel("Stroke width")
-        stackView.addArrangedSubview(strokeSlider)
-
-        // Separator
-        stackView.addArrangedSubview(createSeparator())
-
-        // Undo/Redo buttons
-        undoButton = NSButton(title: "↩", target: self, action: #selector(undoTapped))
-        undoButton.bezelStyle = .rounded
-        undoButton.widthAnchor.constraint(equalToConstant: 32).isActive = true
-        undoButton.toolTip = "Undo (⌘Z)"
-        undoButton.configureAsButton(label: "Undo", hint: "Undo last annotation (⌘Z)")
-        stackView.addArrangedSubview(undoButton)
-
-        redoButton = NSButton(title: "↪", target: self, action: #selector(redoTapped))
-        redoButton.bezelStyle = .rounded
-        redoButton.widthAnchor.constraint(equalToConstant: 32).isActive = true
-        redoButton.toolTip = "Redo (⇧⌘Z)"
-        redoButton.configureAsButton(label: "Redo", hint: "Redo last undone annotation (⇧⌘Z)")
-        stackView.addArrangedSubview(redoButton)
-
-        // Separator
-        stackView.addArrangedSubview(createSeparator())
-
-        // Clear button
-        let clearButton = NSButton(title: "Clear", target: self, action: #selector(clearTapped))
-        clearButton.bezelStyle = .rounded
-        clearButton.setButtonType(.momentaryPushIn)
-        clearButton.configureAsButton(label: "Clear all", hint: "Remove all annotations from the overlay")
-        stackView.addArrangedSubview(clearButton)
-
-        refresh()
-    }
-
-    private func createSeparator() -> NSView {
-        let sep = NSView()
-        sep.wantsLayer = true
-        sep.layer?.backgroundColor = NSColor(white: 0.4, alpha: 1).cgColor
-        sep.widthAnchor.constraint(equalToConstant: 1).isActive = true
-        sep.heightAnchor.constraint(equalToConstant: 20).isActive = true
-        sep.setAccessibilityElement(false)
-        return sep
-    }
-
-    @objc private func toolSelected(_ sender: NSButton) {
-        guard let tool = AnnotationTool(rawValue: sender.tag) else { return }
-        annotationService.currentTool = tool
-        refresh()
-        AccessibilityAnnouncer.shared.announce("Selected \(tool.title) tool")
-    }
-
-    @objc private func openColorPanel() {
-        let colorPanel = NSColorPanel.shared
-        colorPanel.setTarget(self)
-        colorPanel.setAction(#selector(colorPanelChanged(_:)))
-        colorPanel.color = annotationService.strokeColor
-        colorPanel.isContinuous = true
-        colorPanel.makeKeyAndOrderFront(nil)
-    }
-
-    @objc private func colorPanelChanged(_ sender: NSColorPanel) {
-        annotationService.strokeColor = sender.color
-        colorWellButton.layer?.backgroundColor = sender.color.cgColor
-    }
-
-    @objc private func colorSelected(_ sender: NSButton) {
-        guard let color = sender.layer?.backgroundColor.flatMap({ NSColor(cgColor: $0) }) else { return }
-        annotationService.strokeColor = color
-        colorWellButton.layer?.backgroundColor = color.cgColor
-        refresh()
-    }
-
-    @objc private func strokeChanged(_ sender: NSSlider) {
-        annotationService.strokeWidth = CGFloat(sender.doubleValue)
-    }
-
-    @objc private func undoTapped() {
-        annotationService.undo()
-        overlayWindow?.refreshAnnotationView()
-        AccessibilityAnnouncer.shared.announce("Undone")
-    }
-
-    @objc private func redoTapped() {
-        annotationService.redo()
-        overlayWindow?.refreshAnnotationView()
-        AccessibilityAnnouncer.shared.announce("Redone")
-    }
-
-    @objc private func clearTapped() {
-        annotationService.clearAll()
-        overlayWindow?.refreshAnnotationView()
-        AccessibilityAnnouncer.shared.announce("All annotations cleared")
-    }
-
-    func refresh() {
-        for (tool, button) in toolButtons {
-            let isSelected = annotationService.currentTool == tool
-            button.layer?.backgroundColor = isSelected
-                ? NSColor.selectedContentBackgroundColor.cgColor
-                : NSColor.clear.cgColor
-            button.layer?.cornerRadius = 4
-            button.setAccessibilitySelected(isSelected)
-        }
-        undoButton.isEnabled = annotationService.undoManager.canUndo
-        redoButton.isEnabled = annotationService.undoManager.canRedo
-    }
-}

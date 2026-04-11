@@ -3,19 +3,28 @@ import AppKit
 // MARK: - Design System
 
 enum Design {
-    // MARK: - Colors
+    // MARK: - Colors - macOS 26 Liquid Glass
 
     enum Color {
         // Primary palette
-        static let primary = NSColor(red: 0.0, green: 0.48, blue: 1.0, alpha: 1.0)        // Blue
+        static let primary = NSColor(red: 0.0, green: 0.48, blue: 1.0, alpha: 1.0)
         static let primaryDark = NSColor(red: 0.0, green: 0.35, blue: 0.8, alpha: 1.0)
-        static let secondary = NSColor(red: 0.56, green: 0.27, blue: 1.0, alpha: 1.0)     // Purple
-        static let accent = NSColor(red: 1.0, green: 0.58, blue: 0.0, alpha: 1.0)        // Orange
+        static let secondary = NSColor(red: 0.56, green: 0.27, blue: 1.0, alpha: 1.0)
+        static let accent = NSColor(red: 1.0, green: 0.58, blue: 0.0, alpha: 1.0)
 
         // Semantic
         static let success = NSColor(red: 0.2, green: 0.78, blue: 0.35, alpha: 1.0)
         static let warning = NSColor(red: 1.0, green: 0.8, blue: 0.0, alpha: 1.0)
         static let destructive = NSColor(red: 1.0, green: 0.23, blue: 0.19, alpha: 1.0)
+
+        // Liquid Glass neutrals
+        static let glassBackground = NSColor(white: 0.15, alpha: 0.72)
+        static let glassBorder = NSColor(white: 1.0, alpha: 0.18)
+        static let glassHighlight = NSColor(white: 1.0, alpha: 0.25)
+
+        // Swatch colors (for color picker buttons)
+        static let swatchBorder = NSColor(white: 1.0, alpha: 0.25)
+        static let swatchBorderSelected = NSColor(white: 1.0, alpha: 0.4)
 
         // Neutral
         static let background = NSColor(white: 0.1, alpha: 0.85)
@@ -35,10 +44,15 @@ enum Design {
         static let caption = NSFont.systemFont(ofSize: 11, weight: .regular)
         static let small = NSFont.systemFont(ofSize: 9, weight: .regular)
 
-        // Dynamic Type variants
-        static let titleScaled = NSFont.scaledFont(forTextStyle: .headline, weight: .bold)
-        static let bodyScaled = NSFont.scaledFont(forTextStyle: .body, weight: .regular)
-        static let captionScaled = NSFont.scaledFont(forTextStyle: .caption1, weight: .regular)
+        static var titleScaled: NSFont {
+            NSFont.preferredFont(forTextStyle: .headline).withWeight(.bold)
+        }
+        static var bodyScaled: NSFont {
+            NSFont.preferredFont(forTextStyle: .body)
+        }
+        static var captionScaled: NSFont {
+            NSFont.preferredFont(forTextStyle: .caption1)
+        }
     }
 
     // MARK: - Spacing (8pt grid)
@@ -56,14 +70,33 @@ enum Design {
         static let buttonSpacing: CGFloat = 8
     }
 
+    // MARK: - Symbol Sizes
+
+    enum SymbolSize {
+        static let toolButton: CGFloat = 14
+        static let actionButton: CGFloat = 12
+        static let largeIcon: CGFloat = 64
+    }
+
     // MARK: - Corner Radius
 
     enum CornerRadius {
         static let small: CGFloat = 4
         static let medium: CGFloat = 8
         static let large: CGFloat = 12
-        static let toolbar: CGFloat = 12
+        static let toolbar: CGFloat = 16
         static let button: CGFloat = 6
+    }
+
+    // MARK: - Geometry (annotation renderer)
+
+    enum Geometry {
+        static let arrowLength: CGFloat = 20
+        static let arrowAngle: CGFloat = .pi / 6
+        static let blurRadius: CGFloat = 20
+        static let pixelSize: CGFloat = 10
+        static let swatchSmall: CGFloat = 18
+        static let swatchMedium: CGFloat = 24
     }
 
     // MARK: - Animation
@@ -94,10 +127,10 @@ enum Design {
 
     static func styleToolbar(_ view: NSView) {
         view.wantsLayer = true
-        view.layer?.backgroundColor = Color.background.cgColor
+        view.layer?.backgroundColor = Color.glassBackground.cgColor
         view.layer?.cornerRadius = CornerRadius.toolbar
-        view.layer?.borderWidth = 1
-        view.layer?.borderColor = Color.border.cgColor
+        view.layer?.borderWidth = 0.5
+        view.layer?.borderColor = Color.glassBorder.cgColor
     }
 
     static func styleButton(_ button: NSButton, isPrimary: Bool = false) {
@@ -116,4 +149,15 @@ extension NSColor {
     static var semanticSuccess: NSColor { Design.Color.success }
     static var semanticWarning: NSColor { Design.Color.warning }
     static var semanticDestructive: NSColor { Design.Color.destructive }
+}
+
+// MARK: - NSFont Weight Helper
+
+extension NSFont {
+    func withWeight(_ weight: NSFont.Weight) -> NSFont {
+        let descriptor = fontDescriptor.addingAttributes([
+            .traits: [NSFontDescriptor.TraitKey.weight: weight]
+        ])
+        return NSFont(descriptor: descriptor, size: pointSize) ?? self
+    }
 }

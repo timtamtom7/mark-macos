@@ -60,7 +60,7 @@ class OnboardingViewController: NSViewController {
         for i in 0..<pageData.count {
             let dot = NSView()
             dot.wantsLayer = true
-            dot.layer?.cornerRadius = 4
+            dot.layer?.cornerRadius = Design.CornerRadius.small
             dot.layer?.backgroundColor = i == 0 ? Design.Color.primary.cgColor : NSColor.systemGray.cgColor
             dot.widthAnchor.constraint(equalToConstant: 8).isActive = true
             dot.heightAnchor.constraint(equalToConstant: 8).isActive = true
@@ -133,7 +133,7 @@ class OnboardingViewController: NSViewController {
         if let image = NSImage(systemSymbolName: data.icon, accessibilityDescription: data.title) {
             iconView.image = image
             iconView.contentTintColor = Design.Color.primary
-            iconView.symbolConfiguration = NSImage.SymbolConfiguration(pointSize: 64, weight: .light)
+            iconView.symbolConfiguration = NSImage.SymbolConfiguration(pointSize: Design.SymbolSize.largeIcon, weight: .light)
         }
         iconView.translatesAutoresizingMaskIntoConstraints = false
         contentView.addSubview(iconView)

@@ -1,4 +1,7 @@
 import Foundation
+import os.log
+
+private let logger = Logger(subsystem: "com.mark.macos", category: "ICloudSync")
 
 class ICloudSyncService {
     static let shared = ICloudSyncService()
@@ -14,7 +17,9 @@ class ICloudSyncService {
     }
 
     init() {
-        ubiquitousContainerURL = fileManager.url(forUbiquityContainerIdentifier: "iCloud.com.mark.macos")
+        let bundleID = Bundle.main.bundleIdentifier ?? "com.mark.macos"
+        let iCloudContainerID = "iCloud.\(bundleID)"
+        ubiquitousContainerURL = fileManager.url(forUbiquityContainerIdentifier: iCloudContainerID)
     }
 
     // MARK: - Sync Presets
@@ -35,7 +40,7 @@ class ICloudSyncService {
                 let data = try JSONEncoder().encode(presets)
                 try data.write(to: presetsURL)
             } catch {
-                print("ICloud sync write error: \(error)")
+                logger.error("ICloud sync write error: \(error.localizedDescription)")
             }
 
             // Read remote presets from iCloud
@@ -56,7 +61,7 @@ class ICloudSyncService {
                     }
                 }
             } catch {
-                print("ICloud sync read error: \(error)")
+                logger.error("ICloud sync read error: \(error.localizedDescription)")
                 DispatchQueue.main.async {
                     completion(presets)
                 }

@@ -49,7 +49,7 @@ class ShortcutRecorderView: NSView {
 
         wantsLayer = true
         layer?.backgroundColor = NSColor.controlBackgroundColor.cgColor
-        layer?.cornerRadius = 4
+        layer?.cornerRadius = Design.CornerRadius.small
     }
 
     func configure(action: HotkeyAction, keyCode: UInt32, modifiers: UInt32) {
@@ -120,7 +120,7 @@ class ShortcutsSettingsViewController: NSViewController, NSTableViewDataSource, 
 
     private func setupUI() {
         let label = NSTextField(labelWithString: "Keyboard Shortcuts")
-        label.font = NSFont.boldSystemFont(ofSize: 14)
+        label.font = Design.Typography.headline
         label.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(label)
 

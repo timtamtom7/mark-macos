@@ -5,52 +5,92 @@ import AppKit
 enum AnnotationTool: Int, CaseIterable, Codable {
     case arrow = 0
     case rectangle = 1
-    case text = 2
-    case freehand = 3
-    case highlighter = 4
+    case ellipse = 2
+    case line = 3
+    case text = 4
+    case freehand = 5
+    case highlighter = 6
+    case pixelate = 7
+    case blur = 8
 
     var title: String {
         switch self {
         case .arrow: return "Arrow"
         case .rectangle: return "Rectangle"
+        case .ellipse: return "Ellipse"
+        case .line: return "Line"
         case .text: return "Text"
         case .freehand: return "Draw"
         case .highlighter: return "Highlight"
+        case .pixelate: return "Pixelate"
+        case .blur: return "Blur"
         }
     }
 
     var symbol: String {
         switch self {
-        case .arrow: return "➤"
-        case .rectangle: return "□"
-        case .text: return "T"
-        case .freehand: return "✎"
-        case .highlighter: return "▬"
+        case .arrow: return "arrow.up.right"
+        case .rectangle: return "rectangle"
+        case .ellipse: return "oval"
+        case .line: return "line.diagonal"
+        case .text: return "textformat"
+        case .freehand: return "pencil.tip"
+        case .highlighter: return "highlighter"
+        case .pixelate: return "square.grid.3x3"
+        case .blur: return "circle.lefthalf.filled"
         }
     }
 }
 
 // MARK: - Annotation Model
 
-struct Annotation: Identifiable {
+struct Annotation: Identifiable, Codable {
     let id: UUID
     let tool: AnnotationTool
     var startPoint: CGPoint
     var endPoint: CGPoint
-    var color: NSColor
+    var colorData: Data?
     var strokeWidth: CGFloat
     var text: String?
-    var points: [CGPoint]  // for freehand/highlighter
+    var points: [CGPoint]
+
+    var color: NSColor {
+        get {
+            if let data = colorData,
+               let color = try? NSKeyedUnarchiver.unarchivedObject(ofClass: NSColor.self, from: data) {
+                return color
+            }
+            return .red
+        }
+        set {
+            colorData = try? NSKeyedArchiver.archivedData(withRootObject: newValue, requiringSecureCoding: true)
+        }
+    }
 
     init(tool: AnnotationTool, startPoint: CGPoint, color: NSColor, strokeWidth: CGFloat) {
         self.id = UUID()
         self.tool = tool
         self.startPoint = startPoint
         self.endPoint = startPoint
-        self.color = tool == .highlighter ? color.withAlphaComponent(0.3) : color
+        self.colorData = try? NSKeyedArchiver.archivedData(withRootObject: tool == .highlighter ? color.withAlphaComponent(0.3) : color, requiringSecureCoding: true)
         self.strokeWidth = strokeWidth
         self.text = nil
         self.points = [startPoint]
+    }
+}
+
+extension CGPoint: Codable {
+    public init(from decoder: Decoder) throws {
+        var container = try decoder.unkeyedContainer()
+        let x = try container.decode(CGFloat.self)
+        let y = try container.decode(CGFloat.self)
+        self.init(x: x, y: y)
+    }
+
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.unkeyedContainer()
+        try container.encode(x)
+        try container.encode(y)
     }
 }
 
@@ -65,8 +105,10 @@ class AnnotationService: ObservableObject {
     private(set) var currentAnnotation: Annotation?
 
     let undoManager = UndoManager()
+    private let settingsStore: SettingsStore
 
     init(settings: SettingsStore) {
+        self.settingsStore = settings
         self.strokeColor = settings.lastColor
         self.strokeWidth = settings.lastStrokeWidth
         self.currentTool = settings.lastTool
@@ -74,16 +116,18 @@ class AnnotationService: ObservableObject {
 
     func beginAnnotation(at point: CGPoint) {
         if currentTool == .text {
-            let text = requestTextInput(at: point)
-            if let text = text, !text.isEmpty {
-                var annotation = Annotation(
-                    tool: .text,
-                    startPoint: point,
-                    color: strokeColor,
-                    strokeWidth: strokeWidth
-                )
-                annotation.text = text
-                addAnnotation(annotation)
+            Task { @MainActor in
+                let text = await requestTextInput(at: point)
+                if let text = text, !text.isEmpty {
+                    var annotation = Annotation(
+                        tool: .text,
+                        startPoint: point,
+                        color: self.strokeColor,
+                        strokeWidth: self.strokeWidth
+                    )
+                    annotation.text = text
+                    self.addAnnotation(annotation)
+                }
             }
         } else {
             currentAnnotation = Annotation(
@@ -127,29 +171,24 @@ class AnnotationService: ObservableObject {
     }
 
     private func addAnnotation(_ annotation: Annotation) {
-        // Register undo
-        undoManager.registerUndo(withTarget: self) { target in
-            target.removeAnnotation(id: annotation.id)
+        undoManager.registerUndo(withTarget: self) { [weak self] target in
+            guard let self = self else { return }
+            self.removeAnnotation(id: annotation.id)
         }
 
         annotations.append(annotation)
-        settingsStore_?.lastColor = annotation.color
-        settingsStore_?.lastStrokeWidth = annotation.strokeWidth
-        settingsStore_?.lastTool = annotation.tool
-    }
-
-    private var settingsStore_: SettingsStore?
-
-    func setSettingsStore(_ store: SettingsStore) {
-        self.settingsStore_ = store
+        settingsStore.lastColor = annotation.color
+        settingsStore.lastStrokeWidth = annotation.strokeWidth
+        settingsStore.lastTool = annotation.tool
     }
 
     func removeAnnotation(id: UUID) {
         guard let index = annotations.firstIndex(where: { $0.id == id }) else { return }
         let annotation = annotations[index]
 
-        undoManager.registerUndo(withTarget: self) { target in
-            target.annotations.insert(annotation, at: index)
+        undoManager.registerUndo(withTarget: self) { [weak self] target in
+            guard let self = self else { return }
+            self.annotations.insert(annotation, at: index)
         }
 
         annotations.remove(at: index)
@@ -157,8 +196,9 @@ class AnnotationService: ObservableObject {
 
     func clearAll() {
         let allAnnotations = annotations
-        undoManager.registerUndo(withTarget: self) { target in
-            target.annotations.append(contentsOf: allAnnotations)
+        undoManager.registerUndo(withTarget: self) { [weak self] target in
+            guard let self = self else { return }
+            self.annotations.append(contentsOf: allAnnotations)
         }
         annotations.removeAll()
         currentAnnotation = nil
@@ -172,22 +212,50 @@ class AnnotationService: ObservableObject {
         undoManager.redo()
     }
 
-    private func requestTextInput(at point: CGPoint) -> String? {
-        let alert = NSAlert()
-        alert.messageText = "Add Text Annotation"
-        alert.informativeText = "Enter the text to annotate:"
-        alert.alertStyle = .informational
-        alert.addButton(withTitle: "Add")
-        alert.addButton(withTitle: "Cancel")
+    func saveAnnotations(name: String) throws {
+        try AnnotationStorage.shared.save(annotations, name: name)
+    }
 
-        let textField = NSTextField(frame: NSRect(x: 0, y: 0, width: 250, height: 24))
-        textField.placeholderString = "Annotation text..."
-        alert.accessoryView = textField
+    func loadAnnotations(name: String) throws {
+        let loaded = try AnnotationStorage.shared.load(name: name)
+        annotations = loaded
+    }
 
-        let response = alert.runModal()
-        if response == .alertFirstButtonReturn {
-            return textField.stringValue
+    var savedSessionNames: [String] {
+        AnnotationStorage.shared.listSavedAnnotations()
+    }
+
+    private func requestTextInput(at point: CGPoint) async -> String? {
+        await withCheckedContinuation { continuation in
+            DispatchQueue.main.async {
+                let alert = NSAlert()
+                alert.messageText = "Add Text Annotation"
+                alert.informativeText = "Enter the text to annotate:"
+                alert.alertStyle = .informational
+                alert.addButton(withTitle: "Add")
+                alert.addButton(withTitle: "Cancel")
+
+                let textField = NSTextField(frame: NSRect(x: 0, y: 0, width: 250, height: 24))
+                textField.placeholderString = "Annotation text..."
+                alert.accessoryView = textField
+
+                if let window = NSApp.keyWindow {
+                    alert.beginSheetModal(for: window) { response in
+                        if response == .alertFirstButtonReturn {
+                            continuation.resume(returning: textField.stringValue)
+                        } else {
+                            continuation.resume(returning: nil)
+                        }
+                    }
+                } else {
+                    let response = alert.runModal()
+                    if response == .alertFirstButtonReturn {
+                        continuation.resume(returning: textField.stringValue)
+                    } else {
+                        continuation.resume(returning: nil)
+                    }
+                }
+            }
         }
-        return nil
     }
 }

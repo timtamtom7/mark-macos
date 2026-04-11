@@ -1,4 +1,7 @@
 import AppKit
+import os.log
+
+private let logger = Logger(subsystem: "com.mark.macos", category: "MenuBarController")
 
 class MenuBarController {
     private var statusItem: NSStatusItem!
@@ -27,16 +30,25 @@ class MenuBarController {
     private func buildMenu() -> NSMenu {
         let menu = NSMenu()
 
-        menu.addItem(withTitle: "Show Overlay", action: #selector(showOverlay), keyEquivalent: "")
-        menu.addItem(withTitle: "Hide Overlay", action: #selector(hideOverlay), keyEquivalent: "")
+        let showItem = NSMenuItem(title: "Show Overlay", action: #selector(showOverlay), keyEquivalent: "")
+        showItem.accessibilityLabel = "Show Mark overlay"
+        menu.addItem(showItem)
+
+        let hideItem = NSMenuItem(title: "Hide Overlay", action: #selector(hideOverlay), keyEquivalent: "")
+        hideItem.accessibilityLabel = "Hide Mark overlay"
+        menu.addItem(hideItem)
 
         menu.addItem(NSMenuItem.separator())
 
         let captureMenu = NSMenu(title: "Capture")
         let captureItem = menu.addItem(withTitle: "Capture", action: nil, keyEquivalent: "")
         captureItem.submenu = captureMenu
-        captureMenu.addItem(withTitle: "Capture Screen", action: #selector(captureScreen), keyEquivalent: "")
-        captureMenu.addItem(withTitle: "Capture Window", action: #selector(captureWindow), keyEquivalent: "")
+        let captureScreenItem = NSMenuItem(title: "Capture Screen", action: #selector(captureScreen), keyEquivalent: "")
+        captureScreenItem.accessibilityLabel = "Capture entire screen with Mark annotations"
+        captureMenu.addItem(captureScreenItem)
+        let captureWindowItem = NSMenuItem(title: "Capture Window", action: #selector(captureWindow), keyEquivalent: "")
+        captureWindowItem.accessibilityLabel = "Capture selected window with Mark annotations"
+        captureMenu.addItem(captureWindowItem)
 
         menu.addItem(NSMenuItem.separator())
 
@@ -48,6 +60,7 @@ class MenuBarController {
             let item = NSMenuItem(title: tool.title, action: #selector(selectTool(_:)), keyEquivalent: "")
             item.tag = tool.rawValue
             item.target = self
+            item.accessibilityLabel = "\(tool.title) annotation tool"
             toolsMenu.addItem(item)
         }
 
@@ -62,6 +75,7 @@ class MenuBarController {
             let item = NSMenuItem(title: preset.name, action: #selector(applyPreset(_:)), keyEquivalent: "")
             item.representedObject = preset
             item.target = self
+            item.accessibilityLabel = "Apply preset: \(preset.name)"
             presetsMenu.addItem(item)
         }
 
@@ -72,14 +86,20 @@ class MenuBarController {
         }
 
         presetsMenu.addItem(NSMenuItem.separator())
-        presetsMenu.addItem(withTitle: "Manage Presets...", action: #selector(managePresets), keyEquivalent: "")
+        let managePresetsItem = NSMenuItem(title: "Manage Presets...", action: #selector(managePresets), keyEquivalent: "")
+        managePresetsItem.accessibilityLabel = "Open preset manager"
+        presetsMenu.addItem(managePresetsItem)
 
         menu.addItem(NSMenuItem.separator())
 
-        menu.addItem(withTitle: "Clear Annotations", action: #selector(clearAnnotations), keyEquivalent: "")
+        let clearItem = NSMenuItem(title: "Clear Annotations", action: #selector(clearAnnotations), keyEquivalent: "")
+        clearItem.accessibilityLabel = "Clear all annotations"
+        menu.addItem(clearItem)
 
         menu.addItem(NSMenuItem.separator())
-        menu.addItem(withTitle: "Quit Mark", action: #selector(quitApp), keyEquivalent: "")
+        let quitItem = NSMenuItem(title: "Quit Mark", action: #selector(quitApp), keyEquivalent: "")
+        quitItem.accessibilityLabel = "Quit Mark application"
+        menu.addItem(quitItem)
 
         return menu
     }
@@ -220,10 +240,9 @@ class PresetStore: ObservableObject {
         do {
             let data = try JSONEncoder().encode(presets)
             try data.write(to: presetsFileURL)
-            // Sync to iCloud
             iCloudSync.saveToUbiquitousStore(key: presetsKey, data: data)
         } catch {
-            print("Failed to save presets: \(error)")
+            logger.error("Failed to save presets: \(error.localizedDescription)")
         }
     }
 
@@ -331,9 +350,9 @@ class PresetManagerViewController: NSViewController, NSTableViewDataSource, NSTa
         let swatch = NSView(frame: NSRect(x: 220, y: 4, width: 16, height: 16))
         swatch.wantsLayer = true
         swatch.layer?.backgroundColor = preset.color.cgColor
-        swatch.layer?.cornerRadius = 3
+        swatch.layer?.cornerRadius = Design.CornerRadius.small
         swatch.layer?.borderWidth = 1
-        swatch.layer?.borderColor = NSColor.white.withAlphaComponent(0.3).cgColor
+        swatch.layer?.borderColor = Design.Color.swatchBorder.cgColor
         cellView.addSubview(swatch)
 
         let toolLabel = NSTextField(labelWithString: preset.tool.title)

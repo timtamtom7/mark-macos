@@ -1,18 +1,23 @@
 import AppKit
 import Foundation
+import os.log
+
+private let logger = Logger(subsystem: "com.mark.macos", category: "ImgurUploader")
 
 class ImgurUploader: UploadProvider {
     let name = "Imgur (Anonymous)"
 
-    // Note: In production, use your own Imgur Client-ID registered at https://api.imgur.com/oauth2/addclient
-    // For development/testing, this reads from Info.plist or environment. NEVER hardcode client secrets.
     private var clientID: String {
-        // Check environment first (for CI/testing), then Info.plist, then fall back to placeholder
         if let env = ProcessInfo.processInfo.environment["MARK_IMGUR_CLIENT_ID"], !env.isEmpty {
             return env
         }
-        return Bundle.main.object(forInfoDictionaryKey: "ImgurClientID") as? String
-            ?? "YOUR_IMGUR_CLIENT_ID_HERE"
+        guard let clientID = Bundle.main.object(forInfoDictionaryKey: "ImgurClientID") as? String,
+              !clientID.isEmpty,
+              clientID != "YOUR_IMGUR_CLIENT_ID_HERE" else {
+            logger.error("ImgurClientID not configured. Set MARK_IMGUR_CLIENT_ID environment variable or ImgurClientID in Info.plist")
+            return ""
+        }
+        return clientID
     }
     private let uploadEndpoint = URL(string: "https://api.imgur.com/3/image")!
 

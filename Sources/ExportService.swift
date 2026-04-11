@@ -1,6 +1,9 @@
 import AppKit
 import PDFKit
 import UserNotifications
+import os.log
+
+private let logger = Logger(subsystem: "com.mark.macos", category: "ExportService")
 
 class ExportService {
     private let annotationService: AnnotationService
@@ -56,7 +59,17 @@ class ExportService {
         // Single page for now — the overlay covers the whole screen
         _ = CGRect(origin: .zero, size: screenFrame.size)
 
-        guard let image = renderAnnotatedImage() else { return }
+        guard let image = renderAnnotatedImage() else {
+            DispatchQueue.main.async {
+                let alert = NSAlert()
+                alert.messageText = "Export Failed"
+                alert.informativeText = "Could not capture screen. Please grant Screen Recording permission in System Settings > Privacy & Security > Screen Recording."
+                alert.alertStyle = .warning
+                alert.addButton(withTitle: "OK")
+                alert.runModal()
+            }
+            return
+        }
 
         if let pdfPage = PDFPage(image: image) {
             pdfDoc.insert(pdfPage, at: 0)
@@ -177,7 +190,6 @@ class ExportService {
     func renderAnnotatedImage() -> NSImage? {
         guard let screen = NSScreen.main else { return nil }
         let screenRect = screen.frame
-        // Note: scale factor handled by NSScreen.main?.backingScaleFactor if needed for Retina
 
         let image = NSImage(size: screenRect.size)
         image.lockFocus()
@@ -187,111 +199,15 @@ class ExportService {
             return nil
         }
 
-        // Clear to white (or transparent)
         context.setFillColor(NSColor.white.cgColor)
         context.fill(CGRect(origin: .zero, size: screenRect.size))
 
-        // Draw each annotation
         for annotation in annotationService.annotations {
-            drawAnnotation(annotation, in: context)
+            AnnotationRenderer.shared.draw(annotation, in: context)
         }
 
         image.unlockFocus()
         return image
-    }
-
-    private func drawAnnotation(_ annotation: Annotation, in context: CGContext) {
-        context.saveGState()
-        context.setStrokeColor(annotation.color.cgColor)
-        context.setLineWidth(annotation.strokeWidth)
-        context.setLineCap(.round)
-        context.setLineJoin(.round)
-
-        switch annotation.tool {
-        case .arrow:
-            drawArrow(annotation, in: context)
-        case .rectangle:
-            drawRectangle(annotation, in: context)
-        case .text:
-            drawText(annotation, in: context)
-        case .freehand:
-            drawFreehand(annotation, in: context)
-        case .highlighter:
-            drawHighlighter(annotation, in: context)
-        }
-
-        context.restoreGState()
-    }
-
-    private func drawArrow(_ annotation: Annotation, in context: CGContext) {
-        let start = annotation.startPoint
-        let end = annotation.endPoint
-
-        context.move(to: start)
-        context.addLine(to: end)
-        context.strokePath()
-
-        let angle = atan2(end.y - start.y, end.x - start.x)
-        let arrowLength: CGFloat = 20
-        let arrowAngle: CGFloat = .pi / 6
-
-        let point1 = CGPoint(
-            x: end.x - arrowLength * cos(angle - arrowAngle),
-            y: end.y - arrowLength * sin(angle - arrowAngle)
-        )
-        let point2 = CGPoint(
-            x: end.x - arrowLength * cos(angle + arrowAngle),
-            y: end.y - arrowLength * sin(angle + arrowAngle)
-        )
-
-        context.move(to: end)
-        context.addLine(to: point1)
-        context.move(to: end)
-        context.addLine(to: point2)
-        context.strokePath()
-    }
-
-    private func drawRectangle(_ annotation: Annotation, in context: CGContext) {
-        let rect = CGRect(
-            x: min(annotation.startPoint.x, annotation.endPoint.x),
-            y: min(annotation.startPoint.y, annotation.endPoint.y),
-            width: abs(annotation.endPoint.x - annotation.startPoint.x),
-            height: abs(annotation.endPoint.y - annotation.startPoint.y)
-        )
-        context.stroke(rect)
-    }
-
-    private func drawText(_ annotation: Annotation, in context: CGContext) {
-        let text = annotation.text ?? ""
-        guard !text.isEmpty else { return }
-
-        let attributes: [NSAttributedString.Key: Any] = [
-            .font: NSFont.systemFont(ofSize: annotation.strokeWidth * 8, weight: .semibold),
-            .foregroundColor: annotation.color
-        ]
-
-        let attributedString = NSAttributedString(string: text, attributes: attributes)
-        attributedString.draw(at: annotation.startPoint)
-    }
-
-    private func drawFreehand(_ annotation: Annotation, in context: CGContext) {
-        guard annotation.points.count > 1 else { return }
-        context.move(to: annotation.points[0])
-        for point in annotation.points.dropFirst() {
-            context.addLine(to: point)
-        }
-        context.strokePath()
-    }
-
-    private func drawHighlighter(_ annotation: Annotation, in context: CGContext) {
-        guard annotation.points.count > 1 else { return }
-        context.setStrokeColor(annotation.color.withAlphaComponent(0.35).cgColor)
-        context.setLineWidth(annotation.strokeWidth * 4)
-        context.move(to: annotation.points[0])
-        for point in annotation.points.dropFirst() {
-            context.addLine(to: point)
-        }
-        context.strokePath()
     }
 
     // MARK: - Helpers
@@ -304,14 +220,25 @@ class ExportService {
 
     private func showNotification(title: String, message: String) {
         let center = UNUserNotificationCenter.current()
-        center.requestAuthorization(options: [.alert, .sound]) { granted, _ in
-            guard granted else { return }
-            let content = UNMutableNotificationContent()
-            content.title = title
-            content.body = message
-            let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 0.1, repeats: false)
-            let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: trigger)
-            center.add(request)
+        center.requestAuthorization(options: [.alert, .sound]) { granted, error in
+            if granted {
+                let content = UNMutableNotificationContent()
+                content.title = title
+                content.body = message
+                let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 0.1, repeats: false)
+                let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: trigger)
+                center.add(request)
+            } else {
+                // Fallback: show in-app alert when notifications are denied
+                DispatchQueue.main.async {
+                    let alert = NSAlert()
+                    alert.messageText = title
+                    alert.informativeText = message
+                    alert.alertStyle = .informational
+                    alert.addButton(withTitle: "OK")
+                    alert.runModal()
+                }
+            }
         }
     }
 }
@@ -358,12 +285,12 @@ class CapturePreviewViewController: NSViewController {
     private func setupToolbar() {
         let toolbar = NSStackView()
         toolbar.orientation = .horizontal
-        toolbar.spacing = 8
-        toolbar.edgeInsets = NSEdgeInsets(top: 8, left: 12, bottom: 8, right: 12)
+        toolbar.spacing = Design.Spacing.buttonSpacing
+        toolbar.edgeInsets = NSEdgeInsets(top: Design.Spacing.sm, left: Design.Spacing.toolbarPadding, bottom: Design.Spacing.sm, right: Design.Spacing.toolbarPadding)
         toolbar.translatesAutoresizingMaskIntoConstraints = false
         toolbar.wantsLayer = true
-        toolbar.layer?.backgroundColor = NSColor(white: 0.1, alpha: 0.9).cgColor
-        toolbar.layer?.cornerRadius = 8
+        toolbar.layer?.backgroundColor = Design.Color.background.cgColor
+        toolbar.layer?.cornerRadius = Design.CornerRadius.medium
         view.addSubview(toolbar)
 
         NSLayoutConstraint.activate([
@@ -455,87 +382,7 @@ class AnnotationLayerView: NSView {
         context.clear(bounds)
 
         for annotation in annotationService.annotations {
-            drawAnnotation(annotation, in: context)
+            AnnotationRenderer.shared.draw(annotation, in: context)
         }
-    }
-
-    private func drawAnnotation(_ annotation: Annotation, in context: CGContext) {
-        context.saveGState()
-        context.setStrokeColor(annotation.color.cgColor)
-        context.setLineWidth(annotation.strokeWidth)
-        context.setLineCap(.round)
-        context.setLineJoin(.round)
-
-        switch annotation.tool {
-        case .arrow:
-            drawArrow(annotation, in: context)
-        case .rectangle:
-            drawRectangle(annotation, in: context)
-        case .text:
-            drawText(annotation, in: context)
-        case .freehand:
-            drawFreehand(annotation, in: context)
-        case .highlighter:
-            drawHighlighter(annotation, in: context)
-        }
-
-        context.restoreGState()
-    }
-
-    private func drawArrow(_ annotation: Annotation, in context: CGContext) {
-        context.move(to: annotation.startPoint)
-        context.addLine(to: annotation.endPoint)
-        context.strokePath()
-
-        let angle = atan2(annotation.endPoint.y - annotation.startPoint.y, annotation.endPoint.x - annotation.startPoint.x)
-        let arrowLength: CGFloat = 20
-        let arrowAngle: CGFloat = .pi / 6
-
-        let p1 = CGPoint(x: annotation.endPoint.x - arrowLength * cos(angle - arrowAngle),
-                         y: annotation.endPoint.y - arrowLength * sin(angle - arrowAngle))
-        let p2 = CGPoint(x: annotation.endPoint.x - arrowLength * cos(angle + arrowAngle),
-                         y: annotation.endPoint.y - arrowLength * sin(angle + arrowAngle))
-
-        context.move(to: annotation.endPoint)
-        context.addLine(to: p1)
-        context.move(to: annotation.endPoint)
-        context.addLine(to: p2)
-        context.strokePath()
-    }
-
-    private func drawRectangle(_ annotation: Annotation, in context: CGContext) {
-        let rect = CGRect(
-            x: min(annotation.startPoint.x, annotation.endPoint.x),
-            y: min(annotation.startPoint.y, annotation.endPoint.y),
-            width: abs(annotation.endPoint.x - annotation.startPoint.x),
-            height: abs(annotation.endPoint.y - annotation.startPoint.y)
-        )
-        context.stroke(rect)
-    }
-
-    private func drawText(_ annotation: Annotation, in context: CGContext) {
-        let text = annotation.text ?? ""
-        guard !text.isEmpty else { return }
-        let attrs: [NSAttributedString.Key: Any] = [
-            .font: NSFont.systemFont(ofSize: annotation.strokeWidth * 8, weight: .semibold),
-            .foregroundColor: annotation.color
-        ]
-        NSAttributedString(string: text, attributes: attrs).draw(at: annotation.startPoint)
-    }
-
-    private func drawFreehand(_ annotation: Annotation, in context: CGContext) {
-        guard annotation.points.count > 1 else { return }
-        context.move(to: annotation.points[0])
-        for pt in annotation.points.dropFirst() { context.addLine(to: pt) }
-        context.strokePath()
-    }
-
-    private func drawHighlighter(_ annotation: Annotation, in context: CGContext) {
-        guard annotation.points.count > 1 else { return }
-        context.setStrokeColor(annotation.color.withAlphaComponent(0.35).cgColor)
-        context.setLineWidth(annotation.strokeWidth * 4)
-        context.move(to: annotation.points[0])
-        for pt in annotation.points.dropFirst() { context.addLine(to: pt) }
-        context.strokePath()
     }
 }

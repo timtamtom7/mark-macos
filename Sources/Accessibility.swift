@@ -35,11 +35,6 @@ extension NSView {
     func configureAsToolbar(label: String) {
         setAccessibility(label: label, role: .toolbar)
     }
-
-    /// Set accessibility role description
-    func setAccessibilityRoleDescription(_ description: String) {
-        setAccessibilityRoleDescription(description)
-    }
 }
 
 // MARK: - Dynamic Type Support
@@ -71,9 +66,8 @@ class AccessibilityAnnouncer {
             let announcement: [NSAccessibility.NotificationUserInfoKey: Any] = [
                 .announcement: message
             ]
-            if let window = NSApp.windows.first {
-                NSAccessibility.post(element: window, notification: .announcementRequested, userInfo: announcement)
-            }
+            guard let window = NSApp.windows.first ?? NSApp.keyWindow else { return }
+            NSAccessibility.post(element: window, notification: .announcementRequested, userInfo: announcement)
         }
     }
 }
